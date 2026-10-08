@@ -1,0 +1,2230 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>좋은 집 구해줘 v3.4 실거래 안정조회</title>
+<style>
+:root{
+ --navy:#10233f;--blue:#2563eb;--bg:#f4f7fb;--card:#fff;--ink:#172033;--muted:#64748b;
+ --line:#dbe3ee;--green:#15803d;--greenbg:#ecfdf3;--amber:#a16207;--amberbg:#fffbeb;
+ --red:#b42318;--redbg:#fff1f0;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,"Noto Sans KR",Arial,sans-serif;line-height:1.5}
+.wrap{max-width:1280px;margin:auto;padding:20px}
+.hero{background:linear-gradient(135deg,#10233f,#1d4ed8 72%,#4f7cff);color:white;border-radius:24px;padding:30px 34px}
+.hero .eyebrow{font-size:12px;font-weight:900;letter-spacing:.08em;opacity:.8}
+.hero h1{margin:6px 0 8px;font-size:32px}.hero p{margin:0;opacity:.93}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:15px;box-shadow:0 5px 18px rgba(16,35,63,.05)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{display:flex;flex-direction:column;gap:5px}.full{grid-column:1/-1}
+label{font-size:11px;color:var(--muted);font-weight:800}
+input,select,textarea{width:100%;padding:9px 10px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:var(--ink);font-size:13px}
+button{border:0;border-radius:9px;padding:10px 14px;font-weight:900;cursor:pointer}
+.primary{background:var(--blue);color:#fff}.ghost{background:#edf2f7;color:#334155}.dark{background:var(--navy);color:#fff}
+.banner{padding:12px;border-radius:11px;margin-top:10px}
+.info{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}.good{background:var(--greenbg);color:#166534;border:1px solid #bbf7d0}
+.warn{background:var(--amberbg);color:#92400e;border:1px solid #fde68a}.bad{background:var(--redbg);color:#991b1b;border:1px solid #fecdd3}
+.small{font-size:11px;color:var(--muted)}
+.kpi{background:#f8fafc;border:1px solid #e2e8f0;border-radius:13px;padding:13px}
+.kpi span{font-size:10px;color:var(--muted);font-weight:900}.kpi b{display:block;font-size:21px;margin-top:4px}
+.score-wrap{display:grid;grid-template-columns:1.2fr 1fr;gap:14px}
+.score-total{border-radius:18px;padding:24px;background:#10233f;color:#fff}
+.score-total .score{font-size:54px;font-weight:900;line-height:1}.score-total .label{font-size:13px;opacity:.82;margin-top:8px}
+.score-bars{display:grid;gap:10px}
+.score-row{border:1px solid var(--line);border-radius:12px;padding:11px;background:#fff}
+.score-row .head{display:flex;justify-content:space-between;font-size:12px;font-weight:900}
+.bar{height:8px;border-radius:99px;background:#e2e8f0;margin-top:7px;overflow:hidden}.bar i{display:block;height:100%;background:#2563eb}
+.decision{font-size:18px;font-weight:900}
+.timeline{overflow:auto}.timeline table{min-width:920px;width:100%;border-collapse:collapse}
+th,td{border-bottom:1px solid #e5e7eb;padding:9px;text-align:left;font-size:12px}
+th{background:#f8fafc}
+.statusA{color:#166534}.statusB{color:#1d4ed8}.statusC{color:#92400e}.statusD{color:#991b1b}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+details{border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:#fff;margin-top:10px}summary{font-weight:900;cursor:pointer}
+@media(max-width:950px){.grid2,.score-wrap{grid-template-columns:1fr}.grid3{grid-template-columns:1fr 1fr}.grid4{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.grid3,.grid4,.fields{grid-template-columns:1fr}.wrap{padding:10px}.hero{padding:22px}.hero h1{font-size:25px}}
+@media print{@page{size:A4 portrait;margin:10mm}body{background:#fff}.no-print{display:none!important}.wrap{max-width:none;padding:0}.card{box-shadow:none;break-inside:avoid}.hero{padding:16px 20px}.grid4{grid-template-columns:repeat(4,1fr)}}
+
+.area-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.area-card{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff}
+.area-card.best{border:2px solid var(--blue);background:#f7faff}
+.area-card h3{margin:0 0 8px}
+.area-points{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.area-points div{background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;padding:8px}
+.area-points span{font-size:10px;color:#64748b;font-weight:800;display:block}
+.area-points b{font-size:15px}
+.candidate-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.candidate-card{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff}
+.candidate-card.best{border:2px solid #2563eb;background:#f7faff}
+.candidate-card h3{margin:0 0 8px}
+.compare-box{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.compare-box div{background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;padding:8px}
+.compare-box span{font-size:10px;color:#64748b;font-weight:800;display:block}
+.compare-box b{font-size:14px}
+@media(max-width:950px){.area-grid,.candidate-grid{grid-template-columns:1fr}.compare-box{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.compare-box{grid-template-columns:1fr}}
+
+.reason-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.reason-card{border:1px solid var(--line);border-radius:13px;padding:13px;background:#fff}
+.reason-card b{display:block;margin-bottom:4px}
+.action-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.action-card{border-radius:13px;padding:14px;background:#f8fafc;border:1px solid var(--line)}
+.action-card .num{font-size:24px;font-weight:900;color:#2563eb}
+.decision-summary{font-size:16px;line-height:1.75}
+.matrix{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.matrix div{border:1px solid var(--line);border-radius:11px;padding:10px;background:#fff}
+.matrix .active{border:2px solid #2563eb;background:#eff6ff}
+.matrix b{display:block;margin-bottom:3px}
+@media(max-width:900px){.reason-grid,.action-grid,.matrix{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.reason-grid,.action-grid,.matrix{grid-template-columns:1fr}}
+
+.quality-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.quality-card{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff}
+.quality-card h3{margin:0 0 10px}
+.check-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.check-item{display:flex;gap:7px;align-items:flex-start;background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;padding:8px;font-size:12px}
+.check-item input{width:auto;margin-top:2px}
+.cash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cash-item{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px}
+.cash-item span{font-size:10px;color:#64748b;font-weight:800;display:block}
+.cash-item b{font-size:15px}
+@media(max-width:950px){.quality-grid,.check-grid{grid-template-columns:1fr 1fr}.cash-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.quality-grid,.check-grid,.cash-grid{grid-template-columns:1fr}}
+
+.force-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.force-card{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff}
+.force-card h3{margin:0 0 9px}
+.force-score{font-size:25px;font-weight:900;margin-top:8px}
+.force-summary{display:grid;grid-template-columns:1.1fr 1fr;gap:12px}
+.force-balance{border-radius:15px;padding:18px;background:#10233f;color:#fff}
+.force-balance .big{font-size:38px;font-weight:900}
+.force-balance .small{color:#dbeafe}
+.signal-list{display:grid;gap:7px}
+.signal{border:1px solid var(--line);border-radius:10px;padding:9px;background:#f8fafc;font-size:12px}
+@media(max-width:1050px){.force-grid{grid-template-columns:1fr 1fr}.force-summary{grid-template-columns:1fr}}
+@media(max-width:560px){.force-grid{grid-template-columns:1fr}}
+
+.data-panel{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.data-group{border:1px solid var(--line);border-radius:13px;padding:13px;background:#fff}
+.data-group h3{margin:0 0 9px}
+.source-tag{display:inline-block;padding:3px 7px;border-radius:999px;background:#e2e8f0;color:#475569;font-size:10px;font-weight:800;margin-top:5px}
+.auto-result{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.auto-result div{border:1px solid var(--line);border-radius:11px;padding:10px;background:#f8fafc}
+.auto-result span{font-size:10px;color:#64748b;font-weight:800;display:block}
+.auto-result b{font-size:17px}
+@media(max-width:1000px){.data-panel{grid-template-columns:1fr 1fr}.auto-result{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.data-panel,.auto-result{grid-template-columns:1fr}}
+
+.auto-fair-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.auto-fair-card{border:1px solid var(--line);border-radius:13px;padding:12px;background:#fff}
+.auto-fair-card h3{margin:0 0 7px;font-size:13px}
+.auto-fair-card .big{font-size:22px;font-weight:900}
+.auto-fair-table{overflow:auto;margin-top:10px}
+.auto-fair-table table{min-width:980px}
+@media(max-width:900px){.auto-fair-grid{grid-template-columns:1fr}}
+
+.adjust-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+.adjust-card{border:1px solid var(--line);border-radius:12px;padding:11px;background:#fff}
+.adjust-card h3{font-size:12px;margin:0 0 7px}
+.adjust-result{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:10px}
+.adjust-result div{border:1px solid var(--line);border-radius:12px;padding:11px;background:#f8fafc}
+.adjust-result span{display:block;font-size:10px;color:#64748b;font-weight:800}
+.adjust-result b{display:block;font-size:19px;margin-top:3px}
+@media(max-width:1000px){.adjust-grid{grid-template-columns:1fr 1fr}.adjust-result{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.adjust-grid,.adjust-result{grid-template-columns:1fr}}
+
+.final-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.final-card{border:1px solid var(--line);border-radius:13px;padding:13px;background:#f8fafc}
+.final-card span{display:block;font-size:10px;color:#64748b;font-weight:800}
+.final-card b{display:block;font-size:20px;margin-top:4px}
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.plan-card{border:1px solid var(--line);border-radius:13px;padding:13px;background:#fff}
+.plan-card .num{font-size:26px;font-weight:900;color:#2563eb}
+.report-page{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-top:15px}
+.report-head{display:flex;justify-content:space-between;gap:12px;border-bottom:2px solid #10233f;padding-bottom:10px;margin-bottom:14px}
+.report-head h2{margin:0}.report-meta{font-size:11px;color:#64748b;text-align:right}
+.report-section{margin-top:14px}.report-section h3{font-size:15px;margin:0 0 8px}
+.report-line{border:1px solid var(--line);border-radius:11px;padding:10px;background:#f8fafc;margin-bottom:7px}
+@media(max-width:950px){.final-grid,.plan-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.final-grid,.plan-grid{grid-template-columns:1fr}}
+@media print{
+ @page{size:A4 portrait;margin:10mm}
+ body{background:#fff}
+ .no-print{display:none!important}
+ .report-page{border:0;border-radius:0;padding:0;margin:0;page-break-after:always}
+ .report-page:last-of-type{page-break-after:auto}
+}
+
+.stress-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stress-card{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff}
+.stress-card h3{margin:0 0 8px}
+.stress-kpi{font-size:23px;font-weight:900;margin-top:6px}
+.stress-table{overflow:auto;margin-top:10px}
+.stress-table table{min-width:900px}
+.stress-stable{color:#166534}.stress-watch{color:#92400e}.stress-risk{color:#991b1b}
+@media(max-width:900px){.stress-grid{grid-template-columns:1fr}}
+
+.top-summary{display:grid;grid-template-columns:1.3fr repeat(3,1fr);gap:10px;margin-top:15px}
+.top-summary .hero-box{background:#10233f;color:#fff;border-radius:16px;padding:18px}
+.top-summary .hero-box .big{font-size:27px;font-weight:900;margin-top:4px}
+.top-summary .mini{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff}
+.top-summary .mini span{font-size:10px;color:#64748b;font-weight:800;display:block}
+.top-summary .mini b{font-size:20px;display:block;margin-top:4px}
+.section-toggle{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.customer-view{background:#f8fbff;border:1px solid #cfe0f5}
+.pro-view{background:#fffaf0;border:1px solid #f2ddb0}
+.muted-section{opacity:.92}
+@media(max-width:950px){.top-summary{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.top-summary{grid-template-columns:1fr}}
+
+.score-explain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.score-explain-card{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+.score-explain-card h4{margin:0 0 6px;font-size:13px}
+.score-explain-card p{margin:0;font-size:11px;color:#64748b;line-height:1.6}
+.score-explain-card .meaning{margin-top:8px;font-weight:800;font-size:12px;color:#334155}
+@media(max-width:900px){.score-explain-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<section class="hero">
+ <div class="eyebrow">조은땅공인중개사 · 좋은 집 구해줘 v2</div>
+ <h1>내 집 마련 의사결정 MVP</h1>
+ <p>지금 사야 할지, 조금 더 준비해야 할지, 산다면 얼마까지가 안전한지를 한 화면에서 판단합니다.</p>
+</section>
+
+
+<section class="card customer-view">
+ <div class="section-toggle">
+  <div>
+   <h2 style="margin:0">상담 핵심 결과</h2>
+   <div class="small">아래 4개만 먼저 보고, 상세근거는 아래에서 확인합니다.</div>
+  </div>
+  <button class="ghost no-print" onclick="document.getElementById('expertArea').open=!document.getElementById('expertArea').open">전문가 상세보기</button>
+ </div>
+
+ <div class="top-summary">
+  <div class="hero-box">
+   <div class="small" style="color:#cbd5e1">최종 판단</div>
+   <div id="topDecision" class="big">-</div>
+   <div id="topDecisionDesc" class="small" style="color:#dbeafe;margin-top:6px"></div>
+  </div>
+  <div class="mini"><span>안전 매수예산</span><b id="topSafeBudget">-</b></div>
+  <div class="mini"><span>개별 적정가</span><b id="topIndividualFair">-</b></div>
+  <div class="mini"><span>최대 매수가</span><b id="topMaxBuy">-</b></div>
+ </div>
+</section>
+
+<details id="expertArea" class="card pro-view no-print">
+ <summary><b>전문가용 상세 계산·근거 보기</b></summary>
+ <div class="small" style="margin-top:8px">
+  자금진단, 시장점수, 지역점수, 스트레스테스트, 실거래 상세분석 등은 상담사가 검토하는 영역입니다.
+ </div>
+</details>
+
+<section class="card">
+ <h2>1. 고객 현재상황</h2>
+ <div class="grid2">
+  <div class="fields">
+   <div class="field"><label>고객명</label><input id="clientName" placeholder="선택"></div>
+   <div class="field"><label>월 실수령액 합계(만원)</label><input id="monthlyNet" type="number" value="600" oninput="calc()"></div>
+   <div class="field"><label>예금·현금(만원)</label><input id="cash" type="number" value="6000" oninput="calc()"></div>
+   <div class="field"><label>ETF·주식(만원)</label><input id="invest" type="number" value="1000" oninput="calc()"></div>
+   <div class="field"><label>현재 전세보증금(만원)</label><input id="jeonseDeposit" type="number" value="30000" oninput="calc()"></div>
+   <div class="field"><label>전세대출 잔액(만원) · 만기일시상환</label><input id="jeonseLoan" type="number" value="15000" oninput="calc()"></div>
+   <div class="field"><label>기타 부채 잔액(만원)</label><input id="otherDebt" type="number" value="0" oninput="calc()"></div>
+   <div class="field"><label>매월 실제 저축 가능액(만원)</label><input id="monthlySaving" type="number" value="250" oninput="calc()"></div>
+   <div class="field"><label>절대 남겨둘 비상예비자금(만원)</label><input id="emergency" type="number" value="2000" oninput="calc()"></div>
+   <div class="field"><label>입주예비비(만원)</label><input id="moveReserve" type="number" value="500" oninput="calc()"></div>
+  </div>
+
+  <div>
+   <h3>현재 임차조건</h3>
+   <div class="fields">
+    <div class="field"><label>거주형태</label>
+     <select id="housingType" onchange="calc()"><option>전세</option><option>월세</option><option selected>연세</option></select>
+    </div>
+    <div class="field"><label>전세대출 이자율(%)</label><input id="jeonseRate" type="number" step=".01" value="4.0" oninput="calc()"></div>
+    <div class="field"><label>월세(만원)</label><input id="monthlyRent" type="number" value="0" oninput="calc()"></div>
+    <div class="field"><label>연세(만원)</label><input id="annualRent" type="number" value="1600" oninput="calc()"></div>
+    <div class="field"><label>임대료 연 상승률(%)</label><input id="rentGrowth" type="number" step=".1" value="3" oninput="calc()"></div>
+    <div class="field"><label>5년 이상 실거주 가능?</label>
+     <select id="longStay" onchange="calc()"><option value="yes" selected>예</option><option value="maybe">아직 모름</option><option value="no">아니오</option></select>
+    </div>
+   </div>
+   <div class="banner info">전세대출은 거주 중 <b>이자만 비용</b>으로 계산하고, 전세 만기 시 보증금 반환과 함께 원금을 일시상환하는 구조로 봅니다.</div>
+  </div>
+ </div>
+</section>
+
+<section class="card">
+ <h2>2. 희망주택과 금융 사전확인</h2>
+ <div class="fields">
+  <div class="field"><label>현재 관심주택 가격(만원)</label><input id="homePrice" type="number" value="53000" oninput="calc()"></div>
+  <div class="field"><label>관심주택 적정가격 추정(만원)</label><input id="fairPrice" type="number" value="52000" oninput="calc()"></div>
+  <div class="field"><label>금융기관·전문가 사전확인 대출한도(만원)</label><input id="verifiedLoan" type="number" value="0" oninput="calc()" placeholder="미확인 시 0"></div>
+  <div class="field"><label>예상 주담대 금리(%) · 참고</label><input id="mortgageRate" type="number" step=".01" value="4.5" oninput="calc()"></div>
+  <div class="field"><label>상환기간(년) · 참고</label><input id="loanYears" type="number" value="30" oninput="calc()"></div>
+  <div class="field"><label>매수 부대비용 가정률(%)</label><input id="costRate" type="number" step=".1" value="1.5" oninput="calc()"></div>
+ </div>
+ <div class="banner warn">
+  <b>금융 원칙:</b> 실제 DSR·LTV·정책대출·금리·대출한도는 이 앱이 확정하지 않습니다.
+  사전확인 대출한도가 입력되면 그 값을 우선 사용하고, 없으면 월 상환여력으로 계산한 상담용 참고치만 사용합니다.
+ </div>
+</section>
+
+<section class="card">
+ <h2>3. 지금 이 집을 사도 괜찮은가</h2>
+ <div class="grid3">
+  <div class="field"><label>현재 제주 시장환경</label>
+   <select id="marketEnv" onchange="calc()"><option value="10">우호적</option><option value="5" selected>중립</option><option value="0">부담</option></select>
+  </div>
+  <div class="field"><label>관심주택 가격수준</label>
+   <select id="priceAttract" onchange="calc()"><option value="15">적정가 이하</option><option value="10" selected>적정가 범위</option><option value="3">적정가 초과</option><option value="0">과도한 고가</option></select>
+  </div>
+  <div class="field"><label>실거주 예정기간</label>
+   <select id="stayScore" onchange="calc()"><option value="5" selected>5년 이상</option><option value="3">3~5년</option><option value="0">3년 미만 가능성</option></select>
+  </div>
+ </div>
+ <div class="small">시장환경과 가격수준은 1차 버전에서 상담사가 최신 자료를 확인한 뒤 선택합니다. 향후 실거래 API 연결 예정.</div>
+</section>
+
+
+
+<section class="card muted-section">
+ <h2>4. 시장 판단 · 집값의 4가지 힘</h2>
+ <div class="banner info">
+  시장은 한 가지 지표로 판단하지 않습니다.
+  <b>수요 · 공급 · 금융 · 규제</b> 네 축을 함께 보고,
+  실수요자가 지금 서둘러야 하는 시장인지 아니면 기다릴 수 있는 시장인지 판단합니다.
+ </div>
+
+ <div class="force-grid no-print">
+  <div class="force-card">
+   <h3>① 수요의 힘</h3>
+   <div class="field"><label>가구·실수요 흐름</label>
+    <select id="demandHousehold" onchange="calc()">
+     <option value="2">증가/강함</option><option value="1" selected>보통</option><option value="0">감소/약함</option>
+    </select>
+   </div>
+   <div class="field"><label>소득·구매력</label>
+    <select id="demandIncome" onchange="calc()">
+     <option value="2">개선</option><option value="1" selected>보통</option><option value="0">약화</option>
+    </select>
+   </div>
+   <div class="field"><label>매수심리·거래회복</label>
+    <select id="demandSentiment" onchange="calc()">
+     <option value="2">강함</option><option value="1" selected>중립</option><option value="0">약함</option>
+    </select>
+   </div>
+   <div class="force-score" id="forceDemandScore">-</div>
+  </div>
+
+  <div class="force-card">
+   <h3>② 공급의 힘</h3>
+   <div class="field"><label>누적 주택재고(Stock)</label>
+    <select id="supplyStock" onchange="calc()">
+     <option value="2">부족</option><option value="1" selected>균형</option><option value="0">많음</option>
+    </select>
+   </div>
+   <div class="field"><label>향후 신규입주(Flow)</label>
+    <select id="supplyFlow" onchange="calc()">
+     <option value="2">적음</option><option value="1" selected>보통</option><option value="0">많음</option>
+    </select>
+   </div>
+   <div class="field"><label>미분양·매물적체</label>
+    <select id="supplyUnsold" onchange="calc()">
+     <option value="2">낮음</option><option value="1" selected>보통</option><option value="0">높음</option>
+    </select>
+   </div>
+   <div class="force-score" id="forceSupplyScore">-</div>
+  </div>
+
+  <div class="force-card">
+   <h3>③ 금융의 힘</h3>
+   <div class="field"><label>주담대 금리환경</label>
+    <select id="financeRateEnv" onchange="calc()">
+     <option value="2">완화/하락</option><option value="1" selected>중립</option><option value="0">부담/상승</option>
+    </select>
+   </div>
+   <div class="field"><label>대출 접근성</label>
+    <select id="financeCredit" onchange="calc()">
+     <option value="2">완화</option><option value="1" selected>보통</option><option value="0">제약</option>
+    </select>
+   </div>
+   <div class="field"><label>시중 유동성</label>
+    <select id="financeLiquidity" onchange="calc()">
+     <option value="2">확대</option><option value="1" selected>중립</option><option value="0">축소</option>
+    </select>
+   </div>
+   <div class="force-score" id="forceFinanceScore">-</div>
+  </div>
+
+  <div class="force-card">
+   <h3>④ 규제의 힘</h3>
+   <div class="field"><label>거래규제</label>
+    <select id="regTrade" onchange="calc()">
+     <option value="2">완화</option><option value="1" selected>중립</option><option value="0">강화</option>
+    </select>
+   </div>
+   <div class="field"><label>금융규제</label>
+    <select id="regFinance" onchange="calc()">
+     <option value="2">완화</option><option value="1" selected>중립</option><option value="0">강화</option>
+    </select>
+   </div>
+   <div class="field"><label>세금·정책 영향</label>
+    <select id="regTax" onchange="calc()">
+     <option value="2">매수친화</option><option value="1" selected>중립</option><option value="0">부담</option>
+    </select>
+   </div>
+   <div class="force-score" id="forceRegScore">-</div>
+  </div>
+ </div>
+
+ <div class="force-summary" style="margin-top:12px">
+  <div class="force-balance">
+   <div class="small">시장 종합</div>
+   <div class="big" id="forceTotalScore">-</div>
+   <div id="forceMarketLabel" style="font-size:18px;font-weight:900;margin-top:6px"></div>
+  </div>
+  <div class="signal-list">
+   <div class="signal" id="forceSignal1"></div>
+   <div class="signal" id="forceSignal2"></div>
+   <div class="signal" id="forceSignal3"></div>
+   <div class="signal" id="forceSignal4"></div>
+  </div>
+ </div>
+
+ <div id="marketSimpleResult" class="banner info"></div>
+ <div class="small">
+  ※ ‘공급’은 신규입주 물량만이 아니라 누적 주택재고와 미분양까지 함께 봅니다.
+  ※ ‘규제’는 방향을 바꾸는 보조축으로 보고, 시장판단을 규제 하나로 단정하지 않습니다.
+ </div>
+</section>
+
+
+
+
+<section class="card no-print">
+ <h2>5. 국토부 실거래 API 연결</h2>
+ <div class="banner info">
+  API 키는 이 HTML에 저장하지 않습니다. <b>Cloudflare Worker</b>에 키를 보관하고 이 앱은 Worker 주소만 사용합니다.
+ </div>
+ <div class="fields">
+  <div class="field full"><label>Cloudflare Worker URL</label>
+   <input id="workerUrl" value="https://old-cake-8242.kimenkim34.workers.dev" placeholder="https://old-cake-8242.kimenkim34.workers.dev" onchange="localStorage.setItem('goodhouse_worker_url',this.value)">
+  </div>
+  <div class="field"><label>제주시 조회코드</label><input id="apiLawd" value="50110"></div>
+  <div class="field"><label>관심주택 전용면적(㎡)</label><input id="apiArea" type="number" value="84"></div>
+ </div>
+ <div class="actions">
+  <button class="primary" onclick="fetchMarketApi()">제주시 실거래 불러오기</button>
+  <button class="ghost" onclick="fetchCandidateApis()">관심단지 실거래 채우기</button>
+  <button class="ghost" onclick="testWorker()">연결 테스트</button>
+  <button class="ghost" onclick="fetchFullAnalysis()">1순위 12개월 정밀분석</button>
+ </div>
+ <div id="apiStatus" class="banner warn">Worker URL을 입력하면 실제 국토부 신고자료를 불러올 수 있습니다.</div>
+ <div class="small" style="margin-top:7px">
+  빠른 조회는 3→6→12개월 순으로 필요한 만큼만 조회하고, 12개월 상세통계가 필요할 때만 ‘1순위 12개월 정밀분석’을 사용합니다.
+ </div>
+</section>
+
+<section class="card">
+ <h2>6. 공식데이터 입력 → 시장 자동판정</h2>
+ <div class="banner info">
+  이 화면은 향후 API 자동연결을 위한 <b>중간 단계</b>입니다.
+  최신 공식 통계값을 입력하면 수요·공급·금융 점수를 자동 계산하고 위의 4대 시장프레임에 반영합니다.
+ </div>
+
+ <div class="fields no-print" style="margin-bottom:10px">
+  <div class="field"><label>데이터 기준일</label><input id="officialDataDate" type="date"></div>
+  <div class="field"><label>분석지역</label>
+   <select id="officialArea"><option selected>제주시</option><option>삼화지구·화북권</option><option>노형동</option><option>아라동</option></select>
+  </div>
+ </div>
+
+ <div class="data-panel no-print">
+  <div class="data-group">
+   <h3>수요 데이터</h3>
+   <div class="field"><label>최근 1년 세대수 증감률(%)</label><input id="dataHouseholdYoY" type="number" step=".1" value="0" oninput="autoMarketFromData()"></div>
+   <div class="field"><label>최근 3개월 월평균 거래량(건)</label><input id="dataTxRecent3" type="number" value="0" oninput="autoMarketFromData()"></div>
+   <div class="field"><label>직전 12개월 월평균 거래량(건)</label><input id="dataTxPrev12" type="number" value="0" oninput="autoMarketFromData()"></div>
+   <span class="source-tag">KOSIS / R-ONE</span>
+  </div>
+
+  <div class="data-group">
+   <h3>공급 데이터</h3>
+   <div class="field"><label>현재 미분양(호)</label><input id="dataUnsoldNow" type="number" value="0" oninput="autoMarketFromData()"></div>
+   <div class="field"><label>6개월 전 미분양(호)</label><input id="dataUnsold6m" type="number" value="0" oninput="autoMarketFromData()"></div>
+   <div class="field"><label>향후 24개월 입주예정(호)</label><input id="dataMoveIn24m" type="number" value="0" oninput="autoMarketFromData()"></div>
+   <div class="field"><label>지역 주택재고(호)</label><input id="dataHousingStock" type="number" value="0" oninput="autoMarketFromData()"></div>
+   <span class="source-tag">국토부 / KOSIS / 지자체</span>
+  </div>
+
+  <div class="data-group">
+   <h3>금융 데이터</h3>
+   <div class="field"><label>현재 주담대 대표금리(%)</label><input id="dataMortgageRateNow" type="number" step=".01" value="0" oninput="autoMarketFromData()"></div>
+   <div class="field"><label>12개월 전 주담대 대표금리(%)</label><input id="dataMortgageRate12m" type="number" step=".01" value="0" oninput="autoMarketFromData()"></div>
+   <div class="field"><label>가계대출/주택대출 흐름</label>
+    <select id="dataCreditTrend" onchange="autoMarketFromData()"><option value="2">확대</option><option value="1" selected>보통</option><option value="0">축소</option></select>
+   </div>
+   <span class="source-tag">한국은행 ECOS / 금융기관</span>
+  </div>
+ </div>
+
+ <div class="auto-result" style="margin-top:10px">
+  <div><span>수요 자동판정</span><b id="autoDemand">-</b></div>
+  <div><span>공급 자동판정</span><b id="autoSupply">-</b></div>
+  <div><span>금융 자동판정</span><b id="autoFinance">-</b></div>
+  <div><span>데이터 신뢰도</span><b id="autoConfidence">-</b></div>
+ </div>
+
+ <div id="autoMarketExplain" class="banner warn"></div>
+</section>
+
+<section class="card">
+ <h2>7. 어디에 살까</h2>
+ <div class="grid4 no-print">
+  <div class="field"><label>교통 중요도(%)</label><input id="wTraffic" type="number" value="40" oninput="calc()"></div>
+  <div class="field"><label>학군 중요도(%)</label><input id="wSchool" type="number" value="25" oninput="calc()"></div>
+  <div class="field"><label>생활편의 중요도(%)</label><input id="wConvenience" type="number" value="20" oninput="calc()"></div>
+  <div class="field"><label>가격·주거안정 중요도(%)</label><input id="wValue" type="number" value="15" oninput="calc()"></div>
+ </div>
+ <div class="area-grid" style="margin-top:10px">
+  <div class="area-card" id="areaNohyeong">
+   <h3>노형동</h3>
+   <div class="area-points">
+    <div><span>교통</span><b id="nohTraffic">1.9 / 2</b></div>
+    <div><span>학군</span><b id="nohSchool">1.7 / 2</b></div>
+    <div><span>생활편의</span><b id="nohConv">1.9 / 2</b></div>
+    <div><span>가격·안정</span><b id="nohValue">1.3 / 2</b></div>
+   </div>
+   <div style="margin-top:8px;font-size:24px;font-weight:900" id="nohScore">-</div>
+  </div>
+  <div class="area-card" id="areaAra">
+   <h3>아라동</h3>
+   <div class="area-points">
+    <div><span>교통</span><b>1.6 / 2</b></div>
+    <div><span>학군</span><b>1.8 / 2</b></div>
+    <div><span>생활편의</span><b>1.6 / 2</b></div>
+    <div><span>가격·안정</span><b>1.5 / 2</b></div>
+   </div>
+   <div style="margin-top:8px;font-size:24px;font-weight:900" id="araScore">-</div>
+  </div>
+  <div class="area-card" id="areaSamhwa">
+   <h3>삼화지구</h3>
+   <div class="area-points">
+    <div><span>교통</span><b>1.4 / 2</b></div>
+    <div><span>학군</span><b>1.6 / 2</b></div>
+    <div><span>생활편의</span><b>1.5 / 2</b></div>
+    <div><span>가격·안정</span><b>1.8 / 2</b></div>
+   </div>
+   <div style="margin-top:8px;font-size:24px;font-weight:900" id="samhwaScore">-</div>
+  </div>
+ </div>
+ <div id="areaResult" class="banner info"></div>
+</section>
+
+<section class="card">
+ <h2>8. 관심주택 3개 비교</h2>
+ <div class="candidate-grid">
+  <div class="candidate-card" id="cand1">
+   <h3><input id="c1name" value="삼화부영5차" oninput="calc()"></h3>
+   <div class="fields">
+    <div class="field"><label>매매가(만원)</label><input id="c1price" type="number" value="53000" oninput="calc()"></div>
+    <div class="field"><label>전세가(만원)</label><input id="c1jeonse" type="number" value="38000" oninput="calc()"></div>
+    <div class="field"><label>최근 실거래 기준가(만원)</label><input id="c1recent" type="number" value="52500" oninput="calc()"></div>
+    <div class="field"><label>유사단지 비교가(만원)</label><input id="c1comp" type="number" value="53500" oninput="calc()"></div>
+   </div>
+   <div class="compare-box">
+    <div><span>적정가</span><b id="c1fair">-</b></div>
+    <div><span>호가차</span><b id="c1gap">-</b></div>
+    <div><span>전세가율</span><b id="c1ratio">-</b></div>
+    <div><span>판단</span><b id="c1judge">-</b></div>
+   </div>
+  </div>
+
+  <div class="candidate-card" id="cand2">
+   <h3><input id="c2name" value="삼화부영8차" oninput="calc()"></h3>
+   <div class="fields">
+    <div class="field"><label>매매가(만원)</label><input id="c2price" type="number" value="58000" oninput="calc()"></div>
+    <div class="field"><label>전세가(만원)</label><input id="c2jeonse" type="number" value="40000" oninput="calc()"></div>
+    <div class="field"><label>최근 실거래 기준가(만원)</label><input id="c2recent" type="number" value="57000" oninput="calc()"></div>
+    <div class="field"><label>유사단지 비교가(만원)</label><input id="c2comp" type="number" value="57500" oninput="calc()"></div>
+   </div>
+   <div class="compare-box">
+    <div><span>적정가</span><b id="c2fair">-</b></div>
+    <div><span>호가차</span><b id="c2gap">-</b></div>
+    <div><span>전세가율</span><b id="c2ratio">-</b></div>
+    <div><span>판단</span><b id="c2judge">-</b></div>
+   </div>
+  </div>
+
+  <div class="candidate-card" id="cand3">
+   <h3><input id="c3name" value="제주삼화LH2단지" oninput="calc()"></h3>
+   <div class="fields">
+    <div class="field"><label>매매가(만원)</label><input id="c3price" type="number" value="60000" oninput="calc()"></div>
+    <div class="field"><label>전세가(만원)</label><input id="c3jeonse" type="number" value="41000" oninput="calc()"></div>
+    <div class="field"><label>최근 실거래 기준가(만원)</label><input id="c3recent" type="number" value="59500" oninput="calc()"></div>
+    <div class="field"><label>유사단지 비교가(만원)</label><input id="c3comp" type="number" value="60000" oninput="calc()"></div>
+   </div>
+   <div class="compare-box">
+    <div><span>적정가</span><b id="c3fair">-</b></div>
+    <div><span>호가차</span><b id="c3gap">-</b></div>
+    <div><span>전세가율</span><b id="c3ratio">-</b></div>
+    <div><span>판단</span><b id="c3judge">-</b></div>
+   </div>
+  </div>
+ </div>
+ <div id="candidateSummary" class="banner info"></div>
+</section>
+
+
+<section class="card">
+ <h2>9. 실거래 기반 적정매수가 자동분석</h2><div class="small">출처: 국토교통부 아파트 매매·전월세 실거래 신고자료 · 동일면적 기준 · 최근 3/6/12개월 비교</div>
+ <div class="banner info">
+  관심주택의 최근 <b>3개월 · 6개월 · 12개월</b> 동일면적 실거래를 비교해
+  <b>적정가 · 협상 시작가 · 최대 매수가</b>를 자동 계산합니다.
+ </div>
+
+ <div class="auto-fair-grid">
+  <div class="auto-fair-card">
+   <h3>1순위 관심주택</h3>
+   <div id="autoFairName" class="big">-</div>
+   <div class="small" id="autoFairMatch">-</div>
+  </div>
+  <div class="auto-fair-card">
+   <h3>자동 적정가</h3>
+   <div id="autoFairValue" class="big">-</div>
+   <div class="small" id="autoFairConfidence">-</div>
+  </div>
+  <div class="auto-fair-card">
+   <h3>협상가격</h3>
+   <div id="autoFairNegotiate" class="big">-</div>
+   <div class="small" id="autoFairMax">-</div>
+  </div>
+ </div>
+
+ <div class="auto-fair-table">
+  <table>
+   <thead>
+    <tr>
+     <th>기간</th><th>매매건수</th><th>중간값</th><th>평균</th><th>최저</th><th>최고</th><th>최신거래</th><th>전세 중간값</th>
+    </tr>
+   </thead>
+   <tbody id="autoFairBody"></tbody>
+  </table>
+ </div>
+
+ <div id="autoFairSummary" class="banner warn"></div>
+</section>
+
+
+<section class="card">
+ <h2>10. 개별 매물 조건 보정</h2>
+ <div class="banner info">
+  단지 적정가를 그대로 계약가격으로 쓰지 않고, 실제 매물의
+  <b>층 · 향 · 수리상태 · 조망 · 소음/동 위치</b>를 반영해 개별 매물 적정가를 보정합니다.
+ </div>
+
+ <div class="adjust-grid no-print">
+  <div class="adjust-card">
+   <h3>층 조건</h3>
+   <select id="adjFloor" onchange="calcIndividualFair()">
+    <option value="-2">저층</option>
+    <option value="0" selected>중층</option>
+    <option value="1.5">고층</option>
+    <option value="1">탑층</option>
+   </select>
+  </div>
+
+  <div class="adjust-card">
+   <h3>향</h3>
+   <select id="adjDirection" onchange="calcIndividualFair()">
+    <option value="1.5">남향</option>
+    <option value="1" selected>남동/남서</option>
+    <option value="0">동/서향</option>
+    <option value="-1.5">북향 계열</option>
+   </select>
+  </div>
+
+  <div class="adjust-card">
+   <h3>수리상태</h3>
+   <select id="adjRepair" onchange="calcIndividualFair()">
+    <option value="2">올수리/상태 매우 좋음</option>
+    <option value="1">양호</option>
+    <option value="0" selected>보통</option>
+    <option value="-3">수리 필요</option>
+   </select>
+  </div>
+
+  <div class="adjust-card">
+   <h3>조망·개방감</h3>
+   <select id="adjView" onchange="calcIndividualFair()">
+    <option value="1.5">우수</option>
+    <option value="0" selected>보통</option>
+    <option value="-1">불리</option>
+   </select>
+  </div>
+
+  <div class="adjust-card">
+   <h3>소음·동 위치</h3>
+   <select id="adjNoise" onchange="calcIndividualFair()">
+    <option value="1">조용/선호동</option>
+    <option value="0" selected>보통</option>
+    <option value="-1.5">도로·상가·소음 영향</option>
+   </select>
+  </div>
+ </div>
+
+ <div class="adjust-result">
+  <div><span>실거래 기반 단지 적정가</span><b id="individualBaseFair">-</b></div>
+  <div><span>조건 보정률</span><b id="individualAdjRate">-</b></div>
+  <div><span>개별 매물 적정가</span><b id="individualFair">-</b></div>
+  <div><span>개별 최대 매수가</span><b id="individualMaxBuy">-</b></div>
+ </div>
+
+ <div id="individualFairSummary" class="banner warn"></div>
+
+ <details class="no-print">
+  <summary>전문가 보정 기준 안내</summary>
+  <div class="small" style="margin-top:8px;line-height:1.7">
+   현재 기본 보정률은 상담용 초기값입니다. 지역·단지·동·층별 선호도가 다르므로 실제 실거래와 현장 경험에 맞게 조정해야 합니다.
+   총 보정률은 과도한 왜곡을 막기 위해 기본적으로 ±7% 범위로 제한합니다.
+  </div>
+ </details>
+</section>
+
+<section class="card">
+ <h2>11. 현재 자금진단</h2>
+ <div class="grid4">
+  <div class="kpi"><span>순자산</span><b id="netWorth">-</b></div>
+  <div class="kpi"><span>매수 가용 자기자금</span><b id="availableEquity">-</b></div>
+  <div class="kpi"><span>안전 매수예산</span><b id="safeBudget">-</b></div>
+  <div class="kpi"><span>최대 참고예산</span><b id="maxBudget">-</b></div>
+ </div>
+ <div id="financeSource" class="banner info"></div>
+</section>
+
+<section class="card">
+ <h2>12. 내 집 마련 준비도</h2>
+ <div class="score-wrap">
+  <div class="score-total">
+   <div class="score" id="totalScore">-</div>
+   <div class="label">100점 만점</div>
+   <div class="decision" id="decisionLabel" style="margin-top:16px"></div>
+  </div>
+  <div class="score-bars">
+   <div class="score-row"><div class="head"><span>내가 집 살 준비가 되었나</span><b id="readyScore">- / 50</b></div><div class="bar"><i id="readyBar"></i></div></div>
+   <div class="score-row"><div class="head"><span>계속 임차로 살 때 부담</span><b id="rentScore">- / 20</b></div><div class="bar"><i id="rentBar"></i></div></div>
+   <div class="score-row"><div class="head"><span>지금 이 집을 사도 괜찮은가</span><b id="marketScore">- / 30</b></div><div class="bar"><i id="marketBar"></i></div></div>
+  </div>
+ </div>
+ <div id="decisionExplain" class="banner info"></div>
+ <div id="forcedRules" class="banner warn"></div>
+</section>
+
+<section class="card">
+ <h2>13. 지금 vs 6·12·24개월 뒤 매수</h2>
+ <div class="timeline">
+  <table>
+   <thead>
+    <tr><th>시점</th><th>예상 자기자금</th><th>그때까지 누적 임차비</th><th>안전 매수예산</th><th>관심주택 대비</th><th>예상 필요대출</th><th>월 원리금 참고</th></tr>
+   </thead>
+   <tbody id="timelineBody"></tbody>
+  </table>
+ </div>
+ <div id="timingSummary" class="banner info"></div>
+</section>
+
+
+
+<section class="card">
+ <h2>14. 좋은 집인가? · 상품성·임장 판단</h2>
+ <div class="banner info">
+  자금과 시장이 맞아도 실제 집이 좋지 않으면 매수하지 않습니다.
+  <b>가격 · 단지 상품성 · 동/층/향 · 수리상태 · 주차 · 소음 · 생활동선</b>을 현장에서 확인합니다.
+ </div>
+
+ <div class="quality-grid no-print">
+  <div class="quality-card">
+   <h3>단지 상품성</h3>
+   <div class="field"><label>세대수·단지규모</label>
+    <select id="qScale" onchange="calc()"><option value="2">우수</option><option value="1" selected>보통</option><option value="0">약함</option></select>
+   </div>
+   <div class="field"><label>신축·구축 및 관리상태</label>
+    <select id="qAge" onchange="calc()"><option value="2">우수</option><option value="1" selected>보통</option><option value="0">주의</option></select>
+   </div>
+   <div class="field"><label>환금성·실수요</label>
+    <select id="qLiquidity" onchange="calc()"><option value="2">좋음</option><option value="1" selected>보통</option><option value="0">낮음</option></select>
+   </div>
+  </div>
+
+  <div class="quality-card">
+   <h3>동·층·향·내부상태</h3>
+   <div class="field"><label>동·층 조건</label>
+    <select id="qFloor" onchange="calc()"><option value="2">선호도 높음</option><option value="1" selected>보통</option><option value="0">불리</option></select>
+   </div>
+   <div class="field"><label>향·채광·조망</label>
+    <select id="qDirection" onchange="calc()"><option value="2">우수</option><option value="1" selected>보통</option><option value="0">불리</option></select>
+   </div>
+   <div class="field"><label>수리상태</label>
+    <select id="qRepair" onchange="calc()"><option value="2">양호/올수리</option><option value="1" selected>부분수리/보통</option><option value="0">수리비 큼</option></select>
+   </div>
+  </div>
+
+  <div class="quality-card">
+   <h3>생활 품질</h3>
+   <div class="field"><label>주차·관리</label>
+    <select id="qParking" onchange="calc()"><option value="2">좋음</option><option value="1" selected>보통</option><option value="0">불편</option></select>
+   </div>
+   <div class="field"><label>소음·냄새·유해시설</label>
+    <select id="qNoise" onchange="calc()"><option value="2">문제없음</option><option value="1" selected>보통</option><option value="0">주의</option></select>
+   </div>
+   <div class="field"><label>출퇴근·생활동선</label>
+    <select id="qRoute" onchange="calc()"><option value="2">매우 좋음</option><option value="1" selected>보통</option><option value="0">불편</option></select>
+   </div>
+  </div>
+ </div>
+
+ <div class="grid3" style="margin-top:10px">
+  <div class="kpi"><span>상품성 점수</span><b id="qualityScore">-</b></div>
+  <div class="kpi"><span>상품성 판정</span><b id="qualityLabel">-</b></div>
+  <div class="kpi"><span>최종 매수 보정</span><b id="qualityGate">-</b></div>
+ </div>
+</section>
+
+<section class="card">
+ <h2>15. 임장 체크리스트</h2>
+ <div class="check-grid no-print">
+  <label class="check-item"><input type="checkbox" id="ckSun" onchange="calc()">채광·일조 직접 확인</label>
+  <label class="check-item"><input type="checkbox" id="ckNoise" onchange="calc()">창문 개방 후 소음 확인</label>
+  <label class="check-item"><input type="checkbox" id="ckLeak" onchange="calc()">누수·곰팡이·결로 확인</label>
+  <label class="check-item"><input type="checkbox" id="ckCrack" onchange="calc()">벽·천장 균열 확인</label>
+  <label class="check-item"><input type="checkbox" id="ckWater" onchange="calc()">수압·배수 확인</label>
+  <label class="check-item"><input type="checkbox" id="ckElevator" onchange="calc()">엘리베이터·공용부 확인</label>
+  <label class="check-item"><input type="checkbox" id="ckParking" onchange="calc()">야간 주차여건 확인</label>
+  <label class="check-item"><input type="checkbox" id="ckRoute" onchange="calc()">직장·학교 실제 동선 확인</label>
+  <label class="check-item"><input type="checkbox" id="ckManage" onchange="calc()">관리비·장기수선계획 확인</label>
+ </div>
+ <div id="visitCheckResult" class="banner warn"></div>
+</section>
+
+<section class="card">
+ <h2>16. 매수 전 현금계획</h2>
+ <div class="cash-grid">
+  <div class="cash-item"><span>매매가</span><b id="cashPrice">-</b></div>
+  <div class="cash-item"><span>매수 부대비용</span><b id="cashCost">-</b></div>
+  <div class="cash-item"><span>입주예비비</span><b id="cashMove">-</b></div>
+  <div class="cash-item"><span>비상예비자금</span><b id="cashEmergency">-</b></div>
+ </div>
+ <div id="cashPlanSummary" class="banner info"></div>
+</section>
+
+<section class="card">
+ <h2>17. 최종 의사결정 엔진</h2>
+
+ <div class="matrix">
+  <div id="matrixA"><b>A. 지금 매수 가능</b><span class="small">준비도·가격·금융 확인 모두 양호</span></div>
+  <div id="matrixB"><b>B. 선별 매수</b><span class="small">좋은 매물만 가격을 보고 접근</span></div>
+  <div id="matrixC"><b>C. 준비 후 매수</b><span class="small">6~24개월 자금 개선 후 접근</span></div>
+  <div id="matrixD"><b>D. 임차 유지</b><span class="small">현재는 매수보다 안정성 우선</span></div>
+ </div>
+
+ <div id="decisionEngineSummary" class="banner info decision-summary"></div>
+
+ <h3 style="margin-top:16px">왜 이런 결론이 나왔나</h3>
+ <div class="reason-grid">
+  <div class="reason-card"><b>① 자금·상환</b><div id="reasonFinance" class="small"></div></div>
+  <div class="reason-card"><b>② 임차비용</b><div id="reasonRent" class="small"></div></div>
+  <div class="reason-card"><b>③ 시장·관심주택</b><div id="reasonMarketHome" class="small"></div></div>
+ </div>
+
+ <h3 style="margin-top:16px">지금 해야 할 일 3가지</h3>
+ <div class="action-grid">
+  <div class="action-card"><div class="num">1</div><b id="next1Title">-</b><div id="next1Text" class="small"></div></div>
+  <div class="action-card"><div class="num">2</div><b id="next2Title">-</b><div id="next2Text" class="small"></div></div>
+  <div class="action-card"><div class="num">3</div><b id="next3Title">-</b><div id="next3Text" class="small"></div></div>
+ </div>
+</section>
+
+
+
+<section class="card">
+ <h2>18. 매수 스트레스테스트</h2>
+ <div class="banner info">
+  현재 결론이 금리·소득·집값 변화에도 유지되는지 확인합니다.
+  단순히 “살 수 있다”가 아니라 <b>불리한 상황에서도 버틸 수 있는지</b>를 봅니다.
+ </div>
+
+ <div class="stress-grid no-print">
+  <div class="stress-card">
+   <h3>기준 시나리오</h3>
+   <div class="field"><label>금리 변화(%p)</label><input id="stressBaseRate" type="number" step=".1" value="0" oninput="calcStressTest()"></div>
+   <div class="field"><label>소득 변화(%)</label><input id="stressBaseIncome" type="number" step=".1" value="0" oninput="calcStressTest()"></div>
+   <div class="field"><label>집값 변화(%)</label><input id="stressBasePrice" type="number" step=".1" value="0" oninput="calcStressTest()"></div>
+   <div class="stress-kpi" id="stressBaseResult">-</div>
+  </div>
+
+  <div class="stress-card">
+   <h3>보수적 시나리오</h3>
+   <div class="field"><label>금리 변화(%p)</label><input id="stressMidRate" type="number" step=".1" value="1.0" oninput="calcStressTest()"></div>
+   <div class="field"><label>소득 변화(%)</label><input id="stressMidIncome" type="number" step=".1" value="-10" oninput="calcStressTest()"></div>
+   <div class="field"><label>집값 변화(%)</label><input id="stressMidPrice" type="number" step=".1" value="-5" oninput="calcStressTest()"></div>
+   <div class="stress-kpi" id="stressMidResult">-</div>
+  </div>
+
+  <div class="stress-card">
+   <h3>불리한 시나리오</h3>
+   <div class="field"><label>금리 변화(%p)</label><input id="stressBadRate" type="number" step=".1" value="2.0" oninput="calcStressTest()"></div>
+   <div class="field"><label>소득 변화(%)</label><input id="stressBadIncome" type="number" step=".1" value="-20" oninput="calcStressTest()"></div>
+   <div class="field"><label>집값 변화(%)</label><input id="stressBadPrice" type="number" step=".1" value="-10" oninput="calcStressTest()"></div>
+   <div class="stress-kpi" id="stressBadResult">-</div>
+  </div>
+ </div>
+
+ <div class="stress-table">
+  <table>
+   <thead>
+    <tr><th>시나리오</th><th>예상 금리</th><th>월 실수령</th><th>월 원리금</th><th>상환부담률</th><th>집값 가정</th><th>판정</th></tr>
+   </thead>
+   <tbody id="stressBody"></tbody>
+  </table>
+ </div>
+
+ <div id="stressSummary" class="banner warn"></div>
+</section>
+
+<section class="card">
+ <h2>19. 최종 매수판단 통합</h2>
+ <div class="final-grid">
+  <div class="final-card"><span>최종 의사결정</span><b id="integratedDecision">-</b></div>
+  <div class="final-card"><span>안전 매수예산</span><b id="integratedSafeBudget">-</b></div>
+  <div class="final-card"><span>개별 매물 적정가</span><b id="integratedIndividualFair">-</b></div>
+  <div class="final-card"><span>개별 최대 매수가</span><b id="integratedMaxBuy">-</b></div>
+ </div>
+ <div id="integratedSummary" class="banner info"></div>
+ <h3 style="margin-top:16px">지금 해야 할 일 3가지</h3>
+ <div class="plan-grid">
+  <div class="plan-card"><div class="num">1</div><b id="plan1Title">-</b><div id="plan1Text" class="small"></div></div>
+  <div class="plan-card"><div class="num">2</div><b id="plan2Title">-</b><div id="plan2Text" class="small"></div></div>
+  <div class="plan-card"><div class="num">3</div><b id="plan3Title">-</b><div id="plan3Text" class="small"></div></div>
+ </div>
+</section>
+
+<section class="report-page">
+ <div class="report-head">
+  <div>
+   <div class="small" style="color:#1d4ed8;font-weight:900">좋은 집 구해줘 · 조은땅공인중개사</div>
+   <h2>좋은 집 구해줘 · 내 집 마련 상담보고서</h2>
+  </div>
+  <div class="report-meta">고객: <span id="reportClient">-</span><br>기준일: <span id="reportDate">-</span></div>
+ </div>
+
+ <div class="report-section">
+  <h3>1. 현재 재무상태</h3>
+  <div class="final-grid">
+   <div class="final-card"><span>순자산</span><b id="reportNetWorth">-</b></div>
+   <div class="final-card"><span>매수 가용자금</span><b id="reportEquity">-</b></div>
+   <div class="final-card"><span>안전 매수예산</span><b id="reportSafe">-</b></div>
+   <div class="final-card"><span>최대 참고예산</span><b id="reportMax">-</b></div>
+  </div>
+ </div>
+
+ <div class="report-section">
+  <h3>2. 최종 판단</h3>
+  <div id="reportDecision" class="report-line"></div>
+  <div id="reportMarket" class="report-line"></div>
+  <div id="reportRent" class="report-line"></div>
+ </div>
+
+ <div class="report-section">
+  <h3>3. 관심주택 적정가격</h3>
+  <div id="reportHome" class="report-line"></div>
+  <div id="reportPrice" class="report-line"></div>
+ </div>
+
+ <div class="report-section">
+  <h3>4. 실행계획</h3>
+  <div id="reportActions"></div>
+ </div>
+
+ 
+ </section>
+
+<section class="report-page">
+ <div class="report-head">
+  <div>
+   <div class="small" style="color:#1d4ed8;font-weight:900">조은땅공인중개사</div>
+   <h2>관심주택·가격협상·실행계획</h2>
+  </div>
+  <div class="report-meta">고객: <span id="reportClient2">-</span><br>기준일: <span id="reportDate2">-</span></div>
+ </div>
+
+ <div class="report-section">
+  <h3>1. 관심주택</h3>
+  <div id="reportHome2" class="report-line"></div>
+ </div>
+
+ <div class="report-section">
+  <h3>2. 가격협상 기준</h3>
+  <div id="reportPrice2" class="report-line"></div>
+ </div>
+
+ <div class="report-section">
+  <h3>3. 지금 해야 할 일</h3>
+  <div id="reportActions2"></div>
+ </div>
+
+<div class="small" style="border-top:1px solid #e2e8f0;margin-top:16px;padding-top:8px">
+   본 보고서는 상담용 참고자료입니다. 실제 대출가능액·금리·DSR·LTV는 금융전문가 또는 금융기관 확인이 필요하며,
+   최종 계약 전 권리관계·주택상태·세금·관리비·하자·실거래를 다시 확인해야 합니다.
+ </div>
+</section>
+
+<section class="card">
+ <h2>20. 최종 상담 결론</h2>
+ <div id="finalConclusion" class="banner good" style="font-size:15px;line-height:1.8"></div>
+ <div class="actions no-print">
+  <button class="primary" onclick="calc()">다시 계산</button>
+  <button class="ghost" onclick="saveState()">상담 저장</button>
+  <button class="ghost" onclick="loadState()">저장 상담 불러오기</button>
+  <button class="dark" onclick="buildReport();window.print()">상담보고서 인쇄</button>
+ </div>
+</section>
+
+
+
+<section class="card no-print">
+ <details>
+  <summary>공식 데이터 출처 가이드</summary>
+  <div class="small" style="margin-top:8px;line-height:1.8">
+   <b>국토교통부 실거래가:</b> 아파트 매매 및 전월세 신고자료 → 개별 가격·전세가율 계산에 사용<br>
+   <b>한국부동산원 R-ONE:</b> 국가승인 부동산 거래현황통계 → 지역별 거래량 흐름에 사용<br>
+   <b>KOSIS·지자체 통계:</b> 세대수·주택재고·입주 및 미분양 관련 통계<br>
+   <b>한국은행 ECOS:</b> 금리·대출·통화 관련 금융지표<br>
+   실제 API 연결 전까지는 기준일과 출처를 확인한 값을 수기로 입력합니다.
+  </div>
+ </details>
+</section>
+
+<section class="card no-print">
+ <details>
+  <summary>시장판단 프레임 설명</summary>
+  <div class="small" style="margin-top:8px;line-height:1.7">
+   이 앱의 시장판단은 『집값의 법칙』에서 공개적으로 소개된
+   <b>수요·공급·금융·규제</b> 프레임을 실수요자 상담에 맞게 단순화해 응용했습니다.
+   특히 공급은 신규입주만 보지 않고 <b>누적 주택재고(Stock)와 신규공급(Flow)</b>을 구분하고,
+   수요는 인구보다 가구·소득·심리를 함께 보도록 구성했습니다.
+   실제 점수는 상담사가 최신 제주 자료를 확인해 입력해야 합니다.
+  </div>
+ </details>
+</section>
+
+<section class="card no-print">
+ <details>
+  <summary>전문가 설정 · 상담 기준</summary>
+  <div class="fields" style="margin-top:10px">
+   <div class="field"><label>월 상환 권장비율(%)</label><input id="recommendedRatio" type="number" value="35" oninput="calc()"></div>
+   <div class="field"><label>월 상환 경고비율(%)</label><input id="warningRatio" type="number" value="45" oninput="calc()"></div>
+   <div class="field"><label>최대 참고 상환비율(%)</label><input id="maxRatio" type="number" value="45" oninput="calc()"></div>
+  </div>
+ </details>
+</section>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const n=id=>Number($(id)?.value||0);
+const won=v=>Math.round(Number(v||0)).toLocaleString('ko-KR')+'만원';
+
+function pmt(P, annualRate, years){
+ if(P<=0||years<=0)return 0;
+ const r=annualRate/100/12,N=years*12;
+ if(r===0)return P/N;
+ return P*r*Math.pow(1+r,N)/(Math.pow(1+r,N)-1);
+}
+function pvFromMonthlyPayment(monthly, annualRate, years){
+ if(monthly<=0||years<=0)return 0;
+ const r=annualRate/100/12,N=years*12;
+ if(r===0)return monthly*N;
+ return monthly*(Math.pow(1+r,N)-1)/(r*Math.pow(1+r,N));
+}
+function cumulativeRent(months){
+ const type=$('housingType').value;
+ const years=months/12;
+ const growth=n('rentGrowth')/100;
+ if(months===0)return 0;
+ if(type==='전세'){
+  return n('jeonseLoan')*(n('jeonseRate')/100)*years;
+ }
+ if(type==='월세'){
+  let total=0;
+  for(let m=0;m<months;m++){
+   const y=Math.floor(m/12);
+   total += n('monthlyRent')*Math.pow(1+growth,y);
+  }
+  return total;
+ }
+ let total=0;
+ const fullYears=Math.ceil(months/12);
+ for(let y=0;y<fullYears;y++){
+  const monthsThisYear=Math.min(12,months-y*12);
+  total += n('annualRent')*Math.pow(1+growth,y)*(monthsThisYear/12);
+ }
+ return total;
+}
+
+function loanSource(){
+ const verified=n('verifiedLoan');
+ const recMonthly=n('monthlyNet')*n('recommendedRatio')/100;
+ const warnMonthly=n('monthlyNet')*n('maxRatio')/100;
+ const refSafe=pvFromMonthlyPayment(recMonthly,n('mortgageRate'),n('loanYears'));
+ const refMax=pvFromMonthlyPayment(warnMonthly,n('mortgageRate'),n('loanYears'));
+ if(verified>0) return {safe:verified,max:verified,verified:true,refSafe,refMax};
+ return {safe:refSafe,max:refMax,verified:false,refSafe,refMax};
+}
+
+function currentFinance(months=0){
+ const assets=n('cash')+n('invest')+n('jeonseDeposit');
+ const debts=n('jeonseLoan')+n('otherDebt');
+ const net=assets-debts;
+ const futureEquity=Math.max(0,net-n('emergency')-n('moveReserve')+n('monthlySaving')*months);
+ const loan=loanSource();
+ const cr=n('costRate')/100;
+ const safe=(futureEquity+loan.safe)/(1+cr);
+ const max=(futureEquity+loan.max)/(1+cr);
+ return {net,equity:futureEquity,loan,safe,max};
+}
+
+function readinessScore(fin){
+ const price=n('homePrice');
+ let equityScore=0;
+ const equityRatio=price>0?fin.equity/price:0;
+ if(equityRatio>=.35) equityScore=15;
+ else if(equityRatio>=.25) equityScore=12;
+ else if(equityRatio>=.15) equityScore=8;
+ else if(equityRatio>0) equityScore=4;
+
+ const neededLoan=Math.max(0,price*(1+n('costRate')/100)-fin.equity);
+ const monthly=pmt(Math.min(neededLoan,fin.loan.safe),n('mortgageRate'),n('loanYears'));
+ const burden=n('monthlyNet')>0?monthly/n('monthlyNet')*100:999;
+ let repay=0;
+ if(burden<=35) repay=15;
+ else if(burden<=40) repay=12;
+ else if(burden<=45) repay=7;
+
+ let reserve=0;
+ if(n('emergency')>=2000) reserve=10;
+ else if(n('emergency')>=1000) reserve=5;
+
+ const improve12=n('monthlySaving')*12;
+ let improve=0;
+ if(improve12>=3000) improve=10;
+ else if(improve12>=1500) improve=7;
+ else if(improve12>0) improve=4;
+
+ return {score:equityScore+repay+reserve+improve,equityScore,repay,reserve,improve,burden,neededLoan,monthly};
+}
+
+function rentBurdenScore(){
+ const annual=cumulativeRent(12);
+ const annualIncome=n('monthlyNet')*12;
+ const ratio=annualIncome>0?annual/annualIncome:0;
+ if(ratio>=.20)return {score:20,annual,ratio};
+ if(ratio>=.12)return {score:12,annual,ratio};
+ return {score:5,annual,ratio};
+}
+
+
+
+
+
+
+let lastComplexApiData = {};
+
+function calcAutoFairFromApi(name, data){
+  if(!data || !data.windows) return null;
+
+  const w3=data.windows["3"]||{};
+  const w6=data.windows["6"]||{};
+  const w12=data.windows["12"]||{};
+
+  // 최근성 우선 가중치: 3개월 50%, 6개월 30%, 12개월 20%
+  const parts=[];
+  if(w3.saleMedian>0) parts.push([w3.saleMedian,50]);
+  if(w6.saleMedian>0) parts.push([w6.saleMedian,30]);
+  if(w12.saleMedian>0) parts.push([w12.saleMedian,20]);
+
+  if(!parts.length) return {
+    name, fair:0, negotiate:0, maxBuy:0, confidence:data.confidence||'낮음',
+    usedMonths:data.usedMonths||12, jeonseRatio:data.jeonseRatio||0
+  };
+
+  const sw=parts.reduce((s,x)=>s+x[1],0);
+  const weighted=parts.reduce((s,x)=>s+x[0]*x[1],0)/sw;
+
+  // 최근 거래가 존재하면 적정가가 최신거래에서 과도하게 멀어지지 않도록 보정
+  const latest=(w3.latestSale||w6.latestSale||w12.latestSale);
+  let fair=weighted;
+  if(latest && latest.price>0){
+    const lower=latest.price*0.95;
+    const upper=latest.price*1.05;
+    fair=Math.max(lower,Math.min(upper,fair));
+  }
+
+  const negotiate=fair*0.97;
+  const maxBuy=Math.min(fair*1.03, window._safeBudget||Infinity);
+
+  return {
+    name,
+    fair,
+    negotiate,
+    maxBuy,
+    confidence:data.confidence||'낮음',
+    usedMonths:data.usedMonths||12,
+    jeonseRatio:data.jeonseRatio||0,
+    windows:data.windows,
+    matchedNames:data.matchedNames||[]
+  };
+}
+
+function renderAutoFair(){
+  if(!$('autoFairBody')) return;
+
+  const rows=[];
+  for(let i=1;i<=3;i++){
+    const name=($(`c${i}name`)?.value||'').trim();
+    const d=lastComplexApiData[name];
+    if(d) rows.push(calcAutoFairFromApi(name,d));
+  }
+
+  const valid=rows.filter(x=>x && x.fair>0);
+  if(!valid.length){
+    currentAutoFairResult=null;
+    $('autoFairName').textContent='실거래 조회 필요';
+    $('autoFairValue').textContent='-';
+    $('autoFairNegotiate').textContent='-';
+    $('autoFairMax').textContent='-';
+    $('autoFairSummary').className='banner warn';
+    $('autoFairSummary').textContent='관심단지 실거래 채우기를 먼저 실행하세요.';
+    $('autoFairBody').innerHTML='';
+    return;
+  }
+
+  valid.sort((a,b)=>a.fair-b.fair);
+  const best=valid[0];
+  currentAutoFairResult=best;
+
+  $('autoFairName').textContent=best.name;
+  $('autoFairMatch').textContent='API명칭: '+(best.matchedNames.join(', ')||'-');
+  $('autoFairValue').textContent=won(best.fair);
+  $('autoFairConfidence').textContent=`신뢰도 ${best.confidence} · 대표 ${best.usedMonths}개월 · 전세가율 ${(best.jeonseRatio||0).toFixed(1)}%`;
+  $('autoFairNegotiate').textContent=won(best.negotiate);
+  $('autoFairMax').textContent='최대 매수가 '+won(best.maxBuy);
+
+  const wins=["3","6","12"];
+  $('autoFairBody').innerHTML=wins.map(k=>{
+    const w=best.windows[k]||{};
+    const latest=w.latestSale ? `${w.latestSale.date} / ${won(w.latestSale.price)} / ${w.latestSale.floor}층` : '-';
+    return `<tr>
+      <td>${k}개월</td>
+      <td>${w.saleCount||0}건</td>
+      <td>${won(w.saleMedian||0)}</td>
+      <td>${won(w.saleAverage||0)}</td>
+      <td>${won(w.saleMin||0)}</td>
+      <td>${won(w.saleMax||0)}</td>
+      <td>${latest}</td>
+      <td>${won(w.jeonseMedian||0)}</td>
+    </tr>`;
+  }).join('');
+
+  let msg=`<b>${best.name}</b>의 자동 적정가는 약 <b>${won(best.fair)}</b>입니다. `;
+  msg+=`협상 시작가는 약 ${won(best.negotiate)}, 최대 매수가는 약 ${won(best.maxBuy)}로 계산했습니다. `;
+  if(best.confidence==='낮음'){
+    msg+=`다만 최근 12개월 거래건수가 적어 신뢰도가 낮으므로 실제 동·층·향과 인근 유사단지 거래를 추가 확인해야 합니다.`;
+    $('autoFairSummary').className='banner warn';
+  }else{
+    msg+=`최근 3·6·12개월 실거래를 최근성 가중치로 반영했습니다.`;
+    $('autoFairSummary').className='banner good';
+  }
+  $('autoFairSummary').innerHTML=msg;
+  calcIndividualFair();
+}
+
+
+
+let currentAutoFairResult = null;
+
+function calcIndividualFair(){
+  if(!$('individualBaseFair')) return;
+
+  const base = currentAutoFairResult?.fair || 0;
+  if(base<=0){
+    $('individualBaseFair').textContent='-';
+    $('individualAdjRate').textContent='-';
+    $('individualFair').textContent='-';
+    $('individualMaxBuy').textContent='-';
+    $('individualFairSummary').className='banner warn';
+    $('individualFairSummary').textContent='먼저 관심단지 실거래 채우기를 실행해 단지 적정가를 계산하세요.';
+    return;
+  }
+
+  const raw =
+    Number($('adjFloor').value||0) +
+    Number($('adjDirection').value||0) +
+    Number($('adjRepair').value||0) +
+    Number($('adjView').value||0) +
+    Number($('adjNoise').value||0);
+
+  const adj = Math.max(-7, Math.min(7, raw));
+  const individual = base * (1 + adj/100);
+  const safe = window._safeBudget || Infinity;
+  const maxBuy = Math.min(individual*1.03, safe);
+
+  $('individualBaseFair').textContent=won(base);
+  $('individualAdjRate').textContent=(adj>=0?'+':'')+adj.toFixed(1)+'%';
+  $('individualFair').textContent=won(individual);
+  $('individualMaxBuy').textContent=won(maxBuy);
+
+  const bestName=currentAutoFairResult?.name||'관심주택';
+  let cls='info';
+  let text=`<b>${bestName}</b>의 실거래 기반 단지 적정가 ${won(base)}에 개별조건 ${adj>=0?'+':''}${adj.toFixed(1)}%를 반영하면 개별 매물 적정가는 약 <b>${won(individual)}</b>입니다. `;
+  if(adj>=3){
+    cls='warn';
+    text+='선호조건 프리미엄이 큰 편이므로 실제 동일동·유사층 거래와 비교한 뒤 프리미엄을 인정하는 것이 좋습니다.';
+  }else if(adj<=-3){
+    cls='warn';
+    text+='불리한 조건이 있어 할인폭을 충분히 반영하는 것이 좋습니다.';
+  }else{
+    text+='보정폭이 크지 않아 단지 실거래 적정가와 비슷한 수준입니다.';
+  }
+
+  $('individualFairSummary').className='banner '+cls;
+  $('individualFairSummary').innerHTML=text;
+  integratedDecisionUpdate();
+}
+
+
+
+let latestIntegratedDecisionCode = null;
+
+function integratedDecisionUpdate(){
+  if(!$('integratedDecision')) return;
+
+  const safe=window._safeBudget||0;
+  const individualFairText=$('individualFair')?.textContent||'-';
+  const individualMaxText=$('individualMaxBuy')?.textContent||'-';
+
+  const currentLabel=$('decisionLabel')?.textContent||'';
+  let code='D';
+  if(currentLabel.includes('A.')) code='A';
+  else if(currentLabel.includes('B.')) code='B';
+  else if(currentLabel.includes('C.')) code='C';
+
+  const individualFairNum = currentAutoFairResult?.fair>0 && $('individualFair')?.textContent!=='-'
+    ? Number(($('individualFair').textContent||'0').replace(/[^0-9.-]/g,''))
+    : 0;
+
+  const candidatePrice = currentAutoFairResult?.name
+    ? (() => {
+        for(let i=1;i<=3;i++){
+          if(($(`c${i}name`)?.value||'')===currentAutoFairResult.name) return n(`c${i}price`);
+        }
+        return n('homePrice');
+      })()
+    : n('homePrice');
+
+  if(individualFairNum>0 && candidatePrice>individualFairNum*1.08 && (code==='A'||code==='B')){
+    code='C';
+  }
+  if(candidatePrice>safe*1.10 && (code==='A'||code==='B')){
+    code='C';
+  }
+
+  latestIntegratedDecisionCode=code;
+  const label=codeLabel(code);
+
+  $('integratedDecision').textContent=label;
+  $('integratedSafeBudget').textContent=won(safe);
+  $('integratedIndividualFair').textContent=individualFairText;
+  $('integratedMaxBuy').textContent=individualMaxText;
+
+  let cls='info', msg='';
+  if(code==='A'){
+    cls='good';
+    msg='자금·시장·상품성·개별가격 조건이 모두 양호한 편입니다. 금융 사전확인과 계약 전 현장확인이 끝났다면 매수를 진행할 수 있습니다.';
+  }else if(code==='B'){
+    cls='info';
+    msg='매수 준비는 되어 있지만 시장 전체를 따라가기보다 개별 매물 가격경쟁력이 있는 경우만 선별적으로 접근하는 것이 좋습니다.';
+  }else if(code==='C'){
+    cls='warn';
+    msg='현재 관심주택은 가격 또는 자금부담이 다소 큽니다. 6~24개월 준비하거나 더 가격경쟁력 있는 매물을 기다리는 전략이 적절합니다.';
+  }else{
+    cls='bad';
+    msg='현재는 임차 유지가 더 안정적입니다. 자기자금·금융여력·관심주택 가격 중 최소 두 가지 이상이 개선된 뒤 다시 판단하는 것이 좋습니다.';
+  }
+
+  $('integratedSummary').className='banner '+cls;
+  $('integratedSummary').innerHTML=`<b>${label}</b><br>${msg}`;
+
+  const verified=n('verifiedLoan')>0;
+  const bestName=currentAutoFairResult?.name||'관심주택';
+
+  $('plan1Title').textContent=verified?'금융조건 재확인':'금융 사전확인';
+  $('plan1Text').textContent=verified
+    ?'사전확인 받은 대출한도와 실제 실행금리·상환방식을 계약 전 다시 확인합니다.'
+    :'은행 또는 금융전문가에게 실제 대출한도·금리·DSR·LTV 적용을 먼저 확인합니다.';
+
+  $('plan2Title').textContent='1순위 매물 현장확인';
+  $('plan2Text').textContent=`${bestName}의 동·층·향·채광·소음·누수·주차·관리상태를 현장에서 확인합니다.`;
+
+  $('plan3Title').textContent='가격협상';
+  $('plan3Text').textContent=`개별 적정가 ${individualFairText}, 최대 매수가 ${individualMaxText}를 기준으로 협상하고 기준가격을 넘기지 않습니다.`;
+
+  buildReport();
+  updateTopSummary();
+}
+
+
+function updateTopSummary(){
+  if(!$('topDecision')) return;
+  const decision=$('integratedDecision')?.textContent||$('decisionLabel')?.textContent||'-';
+  $('topDecision').textContent=decision;
+  $('topSafeBudget').textContent=$('safeBudget')?.textContent||'-';
+  $('topIndividualFair').textContent=$('individualFair')?.textContent||'-';
+  $('topMaxBuy').textContent=$('individualMaxBuy')?.textContent||'-';
+
+  let desc='현재 입력값과 실거래를 기준으로 판단한 상담결과입니다.';
+  if(decision.includes('A.')) desc='자금·시장·가격조건이 양호해 매수 진행을 검토할 수 있습니다.';
+  else if(decision.includes('B.')) desc='좋은 매물만 가격을 선별해서 접근하는 것이 좋습니다.';
+  else if(decision.includes('C.')) desc='조금 더 준비하거나 가격이 좋은 매물을 기다리는 편이 안전합니다.';
+  else if(decision.includes('D.')) desc='현재는 임차를 유지하면서 자금여력을 개선하는 편이 좋습니다.';
+  $('topDecisionDesc').textContent=desc;
+}
+
+
+function buildReport(){
+  if(!$('reportClient')) return;
+
+  const name=$('clientName')?.value?.trim()||'고객';
+  const today=new Date().toISOString().slice(0,10);
+
+  $('reportClient').textContent=name;
+  $('reportDate').textContent=today;
+  $('reportNetWorth').textContent=$('netWorth')?.textContent||'-';
+  $('reportEquity').textContent=$('availableEquity')?.textContent||'-';
+  $('reportSafe').textContent=$('safeBudget')?.textContent||'-';
+  $('reportMax').textContent=$('maxBudget')?.textContent||'-';
+
+  const decision=latestIntegratedDecisionCode?codeLabel(latestIntegratedDecisionCode):'-';
+  $('reportDecision').innerHTML=`<b>최종 판단:</b> ${decision}`;
+  $('reportMarket').innerHTML=`<b>시장 판단:</b> ${$('forceMarketLabel')?.textContent||'-'} · ${$('forceTotalScore')?.textContent||'-'}`;
+  $('reportRent').innerHTML=`<b>임차비:</b> 5년 누적 약 ${won(cumulativeRent(60))} · 스트레스테스트: ${$('stressBadResult')?.textContent||'-'}`;
+
+  const home=currentAutoFairResult?.name||'-';
+  $('reportHome').innerHTML=`<b>1순위 관심주택:</b> ${home}`;
+  $('reportPrice').innerHTML=
+    `<b>가격:</b> 단지 적정가 ${$('autoFairValue')?.textContent||'-'} · 개별조건 보정가 ${$('individualFair')?.textContent||'-'} · 최대 매수가 ${$('individualMaxBuy')?.textContent||'-'}`;
+
+  $('reportActions').innerHTML=`
+    <div class="report-line"><b>1.</b> ${$('plan1Title')?.textContent||'-'} — ${$('plan1Text')?.textContent||''}</div>
+    <div class="report-line"><b>2.</b> ${$('plan2Title')?.textContent||'-'} — ${$('plan2Text')?.textContent||''}</div>
+    <div class="report-line"><b>3.</b> ${$('plan3Title')?.textContent||'-'} — ${$('plan3Text')?.textContent||''}</div>
+  `;
+
+  if($('reportClient2')){
+    $('reportClient2').textContent=name;
+    $('reportDate2').textContent=today;
+    $('reportHome2').innerHTML=$('reportHome')?.innerHTML||'-';
+    $('reportPrice2').innerHTML=$('reportPrice')?.innerHTML||'-';
+    $('reportActions2').innerHTML=$('reportActions')?.innerHTML||'-';
+  }
+}
+
+
+function stressScenario(rateDelta,incomePct,pricePct,label){
+  const baseIncome=n('monthlyNet');
+  const income=Math.max(1,baseIncome*(1+incomePct/100));
+  const rate=Math.max(0,n('mortgageRate')+rateDelta);
+
+  let price=n('homePrice');
+  if(currentAutoFairResult?.name){
+    for(let i=1;i<=3;i++){
+      if(($(`c${i}name`)?.value||'')===currentAutoFairResult.name){
+        price=n(`c${i}price`);
+        break;
+      }
+    }
+  }
+
+  const stressedPrice=price*(1+pricePct/100);
+  const fin=currentFinance(0);
+  const cr=n('costRate')/100;
+  const needLoan=Math.max(0,stressedPrice*(1+cr)-fin.equity);
+
+  const verified=n('verifiedLoan')>0 ? n('verifiedLoan') : fin.loan.safe;
+  const usedLoan=Math.min(needLoan,verified);
+  const monthly=pmt(usedLoan,rate,n('loanYears'));
+  const burden=income>0?monthly/income*100:999;
+
+  let status='안정', cls='stress-stable';
+  if(burden>45){status='부담 높음';cls='stress-risk';}
+  else if(burden>35){status='주의';cls='stress-watch';}
+
+  return {label,rate,income,stressedPrice,monthly,burden,status,cls};
+}
+
+function calcStressTest(){
+  if(!$('stressBody')) return;
+
+  const s1=stressScenario(n('stressBaseRate'),n('stressBaseIncome'),n('stressBasePrice'),'기준');
+  const s2=stressScenario(n('stressMidRate'),n('stressMidIncome'),n('stressMidPrice'),'보수적');
+  const s3=stressScenario(n('stressBadRate'),n('stressBadIncome'),n('stressBadPrice'),'불리');
+
+  const scenarios=[s1,s2,s3];
+
+  $('stressBaseResult').textContent=s1.status;
+  $('stressBaseResult').className='stress-kpi '+s1.cls;
+  $('stressMidResult').textContent=s2.status;
+  $('stressMidResult').className='stress-kpi '+s2.cls;
+  $('stressBadResult').textContent=s3.status;
+  $('stressBadResult').className='stress-kpi '+s3.cls;
+
+  $('stressBody').innerHTML=scenarios.map(s=>`
+    <tr>
+      <td><b>${s.label}</b></td>
+      <td>${s.rate.toFixed(2)}%</td>
+      <td>${won(s.income)}</td>
+      <td>${won(s.monthly)}</td>
+      <td class="${s.cls}">${s.burden.toFixed(1)}%</td>
+      <td>${won(s.stressedPrice)}</td>
+      <td class="${s.cls}"><b>${s.status}</b></td>
+    </tr>
+  `).join('');
+
+  const badCount=scenarios.filter(s=>s.status==='부담 높음').length;
+  const watchCount=scenarios.filter(s=>s.status==='주의').length;
+
+  let cls='good', msg='';
+  if(badCount===0 && watchCount===0){
+    cls='good';
+    msg='세 시나리오 모두 월 상환부담이 권장범위 안에 있습니다. 현재 매수계획의 재무적 안정성이 비교적 높습니다.';
+  }else if(badCount===0){
+    cls='warn';
+    msg='불리한 상황에서 월 상환부담이 권장선을 넘을 수 있습니다. 최대예산보다 안전예산을 기준으로 접근하는 것이 좋습니다.';
+  }else{
+    cls='bad';
+    msg='금리 상승이나 소득 감소 시 월 상환부담이 경고선을 넘는 시나리오가 있습니다. 매수가격을 낮추거나 자기자금을 더 확보하는 것이 안전합니다.';
+  }
+
+  $('stressSummary').className='banner '+cls;
+  $('stressSummary').innerHTML=msg;
+}
+
+
+function updateScoreMeanings(readyScoreValue,rentScoreValue,marketScoreValue){
+  if($('readyMeaning')){
+    let txt='준비 부족';
+    if(readyScoreValue>=40) txt='매수 준비가 상당히 되어 있습니다.';
+    else if(readyScoreValue>=30) txt='기본 준비는 되었지만 여유자금 확인이 필요합니다.';
+    else if(readyScoreValue>=20) txt='조금 더 자기자금을 확보하는 편이 좋습니다.';
+    $('readyMeaning').textContent=txt;
+  }
+
+  if($('rentMeaning')){
+    let txt='현재 임차비 부담이 낮은 편입니다.';
+    if(rentScoreValue>=18) txt='계속 임차로 기다리는 비용이 큰 편입니다.';
+    else if(rentScoreValue>=10) txt='임차비 부담이 보통 수준입니다.';
+    $('rentMeaning').textContent=txt;
+  }
+
+  if($('marketMeaning')){
+    let txt='시장과 관심주택 조건이 부담스러운 편입니다.';
+    if(marketScoreValue>=24) txt='시장과 관심주택 조건이 비교적 우호적입니다.';
+    else if(marketScoreValue>=16) txt='좋은 매물만 골라 접근하기 좋은 구간입니다.';
+    $('marketMeaning').textContent=txt;
+  }
+}
+
+
+function workerBase(){
+ return ($('workerUrl')?.value||'').trim().replace(/\/+$/,'');
+}
+async function apiGet(path){
+ const base=workerBase();
+ if(!base) throw new Error('Worker URL을 먼저 입력하세요.');
+
+ let res;
+ try{
+   res=await fetch(base+path,{cache:'no-store'});
+ }catch(e){
+   throw new Error(`Worker 연결 실패 · ${e.message}`);
+ }
+
+ const text=await res.text();
+ let data={};
+ try{ data=JSON.parse(text); }
+ catch(e){
+   throw new Error(`Worker 응답이 JSON이 아닙니다 · HTTP ${res.status} · ${text.slice(0,120)}`);
+ }
+
+ if(!res.ok || data.ok===false){
+   throw new Error(data.error||`HTTP ${res.status}`);
+ }
+ return data;
+}
+function setApiStatus(msg,type='info'){
+ const el=$('apiStatus'); if(!el)return;
+ el.className='banner '+type; el.innerHTML=msg;
+}
+async function testWorker(){
+ try{
+  setApiStatus('Worker 연결을 확인하고 있습니다…','info');
+  const d=await apiGet('/health');
+  setApiStatus(`연결 성공 · ${d.service||'Worker 정상'}`,'good');
+ }catch(e){ setApiStatus('연결 실패: '+e.message,'bad'); }
+}
+async function fetchMarketApi(){
+ try{
+  setApiStatus('현재월을 제외한 제주시 최근 15개월 아파트 매매 실거래를 불러오는 중입니다…','info');
+  const lawd=encodeURIComponent(($('apiLawd')?.value||'50110').trim());
+  const d=await apiGet(`/market?lawd=${lawd}&months=15`);
+
+  $('dataTxRecent3').value=(d.recent3AvgCount||0).toFixed(1);
+  $('dataTxPrev12').value=(d.prev12AvgCount||0).toFixed(1);
+  $('officialDataDate').value=new Date().toISOString().slice(0,10);
+
+  autoMarketFromData();
+  calc();
+
+  setApiStatus(
+   `국토부 매매 실거래 조회 완료(현재월 제외) · 최근 3개월 월평균 <b>${(d.recent3AvgCount||0).toFixed(1)}건</b> · `+
+   `이전 월평균 <b>${(d.prev12AvgCount||0).toFixed(1)}건</b>`,
+   'good'
+  );
+ }catch(e){ setApiStatus('실거래 조회 실패: '+e.message,'bad'); }
+}
+async function fetchCandidateApis(){
+ const area=Number($('apiArea')?.value||84);
+ const lawd=encodeURIComponent(($('apiLawd')?.value||'50110').trim());
+
+ try{
+  setApiStatus('관심단지 빠른 실거래 조회 중입니다…','info');
+
+  const messages=[];
+
+  for(let i=1;i<=3;i++){
+   const name=($(`c${i}name`)?.value||'').trim();
+   if(!name) continue;
+
+   const d=await apiGet(
+    `/complex?lawd=${lawd}&name=${encodeURIComponent(name)}&area=${area}&tolerance=7&mode=quick`
+   );
+
+   lastComplexApiData[name]=d;
+
+   if(d.saleMedian>0) $(`c${i}recent`).value=Math.round(d.saleMedian);
+   if(d.jeonseMedian>0) $(`c${i}jeonse`).value=Math.round(d.jeonseMedian);
+
+   const matched=(d.matchedNames||[]).join(', ') || '일치 단지명 없음';
+   messages.push(
+    `${name}: 대표 ${d.usedMonths||12}개월 · 매매 ${d.saleCount||0}건 · 전월세 ${d.rentCount||0}건 · API명칭 ${matched}`
+   );
+  }
+
+  calc();
+  renderAutoFair();
+
+  setApiStatus(
+   '<b>관심단지 조회 완료</b><br>'+messages.join('<br>')+
+   '<br><span class="small">※ 현재 호가는 실거래가가 아니므로 자동 변경하지 않습니다.</span>',
+   'good'
+  );
+ }catch(e){
+  setApiStatus('관심단지 조회 실패: '+e.message,'bad');
+ }
+}
+
+
+
+async function fetchFullAnalysis(){
+ try{
+   const area=Number($('apiArea')?.value||84);
+   const lawd=encodeURIComponent(($('apiLawd')?.value||'50110').trim());
+
+   let name='';
+   for(let i=1;i<=3;i++){
+     const candidate=($(`c${i}name`)?.value||'').trim();
+     if(candidate){ name=candidate; break; }
+   }
+   if(!name) throw new Error('관심주택 이름을 먼저 입력하세요.');
+
+   setApiStatus(`${name} 최근 12개월 정밀분석을 불러오는 중입니다…`,'info');
+
+   const d=await apiGet(
+     `/complex?lawd=${lawd}&name=${encodeURIComponent(name)}&area=${area}&tolerance=7&mode=full`
+   );
+
+   lastComplexApiData[name]=d;
+   renderAutoFair();
+   setApiStatus(
+     `<b>${name} 정밀분석 완료</b> · 대표 ${d.usedMonths}개월 · 12개월 매매 ${d.windows?.["12"]?.saleCount||0}건 · 신뢰도 ${d.confidence||'-'}`,
+     'good'
+   );
+ }catch(e){
+   setApiStatus('정밀분석 실패: '+e.message,'bad');
+ }
+}
+
+
+function autoMarketFromData(){
+ if(!$('dataHouseholdYoY')) return;
+
+ const h=n('dataHouseholdYoY');
+ const tx3=n('dataTxRecent3'), tx12=n('dataTxPrev12');
+ const txRatio=tx12>0?tx3/tx12:0;
+
+ // Demand: households + transaction recovery
+ let hhScore = h>=1 ? 2 : h>=0 ? 1 : 0;
+ let txScore = txRatio>=1.15 ? 2 : txRatio>=0.85 ? 1 : 0;
+ let demandAuto=Math.round((hhScore+txScore)/4*6);
+
+ // Supply: unsold direction + 24m completions / housing stock
+ const uNow=n('dataUnsoldNow'), u6=n('dataUnsold6m');
+ let unsoldScore=1;
+ if(u6>0){
+  const ur=uNow/u6;
+  unsoldScore=ur<=0.9?2:ur<=1.1?1:0;
+ }
+ const stock=n('dataHousingStock'), move=n('dataMoveIn24m');
+ const supplyRatio=stock>0?move/stock:0;
+ let flowScore=supplyRatio<=0.02?2:supplyRatio<=0.05?1:0;
+ let supplyAuto=Math.round((unsoldScore+flowScore)/4*6);
+
+ // Finance: mortgage rate direction + credit trend
+ const rNow=n('dataMortgageRateNow'), r12=n('dataMortgageRate12m');
+ let rateScore=1;
+ if(rNow>0 && r12>0){
+  const diff=rNow-r12;
+  rateScore=diff<=-0.5?2:diff<0.5?1:0;
+ }
+ const creditScore=Number($('dataCreditTrend').value||1);
+ let financeAuto=Math.round((rateScore+creditScore)/4*6);
+
+ // Completeness / confidence
+ const required=[
+  n('dataTxRecent3'),n('dataTxPrev12'),n('dataUnsoldNow'),n('dataUnsold6m'),
+  n('dataMoveIn24m'),n('dataHousingStock'),n('dataMortgageRateNow'),n('dataMortgageRate12m')
+ ];
+ const filled=required.filter(v=>v>0).length;
+ const confidence=Math.round(filled/required.length*100);
+
+ $('autoDemand').textContent=demandAuto+'/6';
+ $('autoSupply').textContent=supplyAuto+'/6';
+ $('autoFinance').textContent=financeAuto+'/6';
+ $('autoConfidence').textContent=confidence+'%';
+
+ // convert 0~6 to the three market dropdowns (2/1/0)
+ const conv=s=>s>=4?2:s>=2?1:0;
+
+ if(confidence>=50){
+  $('demandHousehold').value=String(conv(demandAuto));
+  $('demandIncome').value='1'; // income stays neutral until separate official income series is connected
+  $('demandSentiment').value=String(conv(demandAuto));
+
+  $('supplyStock').value=String(conv(supplyAuto));
+  $('supplyFlow').value=String(conv(supplyAuto));
+  $('supplyUnsold').value=String(conv(supplyAuto));
+
+  $('financeRateEnv').value=String(conv(financeAuto));
+  $('financeCredit').value=String(creditScore);
+  $('financeLiquidity').value='1';
+ }
+
+ $('autoMarketExplain').className='banner '+(confidence>=75?'good':confidence>=50?'info':'warn');
+ $('autoMarketExplain').innerHTML=
+  confidence>=75
+   ?`입력된 공식 데이터가 충분해 <b>수요·공급·금융 점수를 자동 반영</b>했습니다. 규제는 정책내용의 해석이 필요해 수동 입력을 유지합니다.`
+   :confidence>=50
+    ?`일부 공식 데이터가 입력되어 자동판정에 반영했습니다. 빈 항목을 채우면 신뢰도가 올라갑니다.`
+    :`공식 데이터 입력이 아직 부족합니다. 현재 4대 시장판정은 수동 입력값이 중심입니다.`;
+
+ marketSimpleScore();
+}
+
+
+function marketSimpleScore(){
+ const demand=[
+  Number($('demandHousehold')?.value||0),
+  Number($('demandIncome')?.value||0),
+  Number($('demandSentiment')?.value||0)
+ ].reduce((a,b)=>a+b,0); // 0~6
+
+ const supply=[
+  Number($('supplyStock')?.value||0),
+  Number($('supplyFlow')?.value||0),
+  Number($('supplyUnsold')?.value||0)
+ ].reduce((a,b)=>a+b,0); // 0~6
+
+ const finance=[
+  Number($('financeRateEnv')?.value||0),
+  Number($('financeCredit')?.value||0),
+  Number($('financeLiquidity')?.value||0)
+ ].reduce((a,b)=>a+b,0); // 0~6
+
+ const regulation=[
+  Number($('regTrade')?.value||0),
+  Number($('regFinance')?.value||0),
+  Number($('regTax')?.value||0)
+ ].reduce((a,b)=>a+b,0); // 0~6
+
+ const total=demand+supply+finance+regulation; // 0~24
+ const pct=total/24*100;
+
+ if($('forceDemandScore')) $('forceDemandScore').textContent=demand+'/6';
+ if($('forceSupplyScore')) $('forceSupplyScore').textContent=supply+'/6';
+ if($('forceFinanceScore')) $('forceFinanceScore').textContent=finance+'/6';
+ if($('forceRegScore')) $('forceRegScore').textContent=regulation+'/6';
+ if($('forceTotalScore')) $('forceTotalScore').textContent=pct.toFixed(0)+'점';
+
+ let env=0,label='',text='',clsName='warn';
+ if(total>=18){
+  env=10; label='매수환경 우호'; clsName='good';
+  text='네 가지 힘이 전반적으로 매수에 우호적입니다. 다만 개별 주택 가격이 적정한지 별도 확인해야 합니다.';
+ }else if(total>=12){
+  env=5; label='혼조·선별 접근'; clsName='info';
+  text='수요·공급·금융·규제가 엇갈리는 구간입니다. 시장 전체보다 개별 매물 가격경쟁력이 더 중요합니다.';
+ }else{
+  env=0; label='매수환경 부담'; clsName='bad';
+  text='시장 전반의 부담요인이 큽니다. 실수요가 급하지 않다면 추격매수보다 기다리는 전략이 유리할 수 있습니다.';
+ }
+
+ if($('marketEnv')) $('marketEnv').value=String(env);
+ if($('forceMarketLabel')) $('forceMarketLabel').textContent=label;
+
+ if($('forceSignal1')) $('forceSignal1').innerHTML=`<b>수요 ${demand}/6</b> · 가구·소득·매수심리를 함께 봅니다.`;
+ if($('forceSignal2')) $('forceSignal2').innerHTML=`<b>공급 ${supply}/6</b> · 재고(Stock)와 신규입주(Flow)를 구분합니다.`;
+ if($('forceSignal3')) $('forceSignal3').innerHTML=`<b>금융 ${finance}/6</b> · 금리·대출접근성·유동성을 함께 봅니다.`;
+ if($('forceSignal4')) $('forceSignal4').innerHTML=`<b>규제 ${regulation}/6</b> · 거래·금융·세금 규제의 방향을 봅니다.`;
+
+ if($('marketSimpleResult')){
+  $('marketSimpleResult').className='banner '+clsName;
+  $('marketSimpleResult').innerHTML=`<b>${label}</b> · ${pct.toFixed(0)}점/100<br>${text}`;
+ }
+
+ return env;
+}
+
+
+function calcAreaScores(){
+ if(!$('wTraffic'))return [];
+ const w=[n('wTraffic'),n('wSchool'),n('wConvenience'),n('wValue')];
+ const sw=w.reduce((a,b)=>a+b,0)||1;
+ const data=[
+  {name:'노형동',id:'areaNohyeong',out:'nohScore',vals:[1.9,1.7,1.9,1.3]},
+  {name:'아라동',id:'areaAra',out:'araScore',vals:[1.6,1.8,1.6,1.5]},
+  {name:'삼화지구',id:'areaSamhwa',out:'samhwaScore',vals:[1.4,1.6,1.5,1.8]}
+ ];
+ data.forEach(x=>{
+  x.score=x.vals.reduce((s,v,i)=>s+v*w[i],0)/sw*5;
+  $(x.out).textContent=x.score.toFixed(1)+' / 10';
+  $(x.id).classList.remove('best');
+ });
+ data.sort((a,b)=>b.score-a.score);
+ $(data[0].id).classList.add('best');
+ $('areaResult').innerHTML=`현재 우선순위에서는 <b>${data[0].name}</b>이 ${data[0].score.toFixed(1)}점으로 1순위입니다. 2순위는 ${data[1].name} ${data[1].score.toFixed(1)}점입니다.`;
+ return data;
+}
+
+function candidateEval(i){
+ const price=n(`c${i}price`);
+ const jeonse=n(`c${i}jeonse`);
+ const recent=n(`c${i}recent`);
+ const comp=n(`c${i}comp`);
+ const fairVals=[recent,comp].filter(v=>v>0);
+ const fair=fairVals.length?fairVals.reduce((a,b)=>a+b,0)/fairVals.length:price;
+ const gap=fair>0?(price-fair)/fair*100:0;
+ const ratio=price>0?jeonse/price*100:0;
+
+ let score=0, judge='보통';
+ if(gap<=-3){score+=15;judge='가격 매력 높음';}
+ else if(gap<=0){score+=12;judge='적정가 이하';}
+ else if(gap<=3){score+=9;judge='적정가 범위';}
+ else if(gap<=7){score+=4;judge='호가 다소 높음';}
+ else {score+=0;judge='호가 부담';}
+
+ if(ratio>=70&&ratio<80)score+=5;
+ else if(ratio>=60&&ratio<70)score+=3;
+ else if(ratio>=80&&ratio<85)score+=2;
+
+ $(`c${i}fair`).textContent=won(fair);
+ $(`c${i}gap`).textContent=`${gap>=0?'+':''}${gap.toFixed(1)}%`;
+ $(`c${i}ratio`).textContent=ratio.toFixed(1)+'%';
+ $(`c${i}judge`).textContent=judge;
+
+ return {i,name:$(`c${i}name`).value||`후보${i}`,price,fair,gap,ratio,score,judge};
+}
+
+function calcCandidates(){
+ if(!$('c1price'))return [];
+ const rows=[candidateEval(1),candidateEval(2),candidateEval(3)].sort((a,b)=>b.score-a.score);
+ ['cand1','cand2','cand3'].forEach(id=>$(id).classList.remove('best'));
+ $(`cand${rows[0].i}`).classList.add('best');
+
+ let best=rows[0];
+ $('candidateSummary').innerHTML=`현재 후보 중 <b>${best.name}</b>이 가장 가격조건이 좋습니다. 매매가 ${won(best.price)}, 적정가 약 ${won(best.fair)}, 차이 ${best.gap>=0?'+':''}${best.gap.toFixed(1)}%입니다.`;
+
+ // 관심주택 핵심 입력에 1순위 반영
+ if($('homePrice')) $('homePrice').value=Math.round(best.price);
+ if($('fairPrice')) $('fairPrice').value=Math.round(best.fair);
+
+ // price attractiveness
+ let priceAttr=0;
+ if(best.gap<=0)priceAttr=15;
+ else if(best.gap<=3)priceAttr=10;
+ else if(best.gap<=7)priceAttr=3;
+ else priceAttr=0;
+ if($('priceAttract')) $('priceAttract').value=String(priceAttr);
+
+ return rows;
+}
+
+
+function marketHomeScore(){
+ const m=Number($('marketEnv').value||0);
+ const p=Number($('priceAttract').value||0);
+ const s=Number($('stayScore').value||0);
+ return {score:m+p+s,m,p,s};
+}
+
+function decisionFromScore(total, ready, fin){
+ let code = total>=80?'A':total>=65?'B':total>=50?'C':'D';
+ const forced=[];
+ const price=n('homePrice');
+
+ if(ready.burden>45 && code==='A'){code='B';forced.push('월 원리금 부담이 실수령의 45%를 초과해 A 판정을 제한');}
+ if(n('emergency')<=0 && code==='A'){code='B';forced.push('비상예비자금이 없어 A 판정을 제한');}
+ if(price>fin.safe*1.10 && (code==='A'||code==='B')){code='C';forced.push('관심주택이 안전예산보다 10% 이상 높아 A/B 판정을 제한');}
+ if($('longStay').value==='no' && code==='A'){code='B';forced.push('5년 이상 거주 가능성이 낮아 A 판정을 제한');}
+ if(n('verifiedLoan')<=0)forced.push('실제 금융기관·금융전문가 대출 사전확인 전');
+
+ return {code,forced};
+}
+function codeLabel(code){
+ return {A:'A. 지금 매수 가능',B:'B. 좋은 매물만 선별 매수',C:'C. 6~24개월 준비 후 매수',D:'D. 현재는 임차 유지'}[code];
+}
+function cls(code){return {A:'statusA',B:'statusB',C:'statusC',D:'statusD'}[code]}
+
+
+
+function qualityEval(){
+ if(!$('qScale'))return {score:18,label:'미입력',gate:'없음'};
+ const ids=['qScale','qAge','qLiquidity','qFloor','qDirection','qRepair','qParking','qNoise','qRoute'];
+ const raw=ids.reduce((s,id)=>s+Number($(id).value||0),0); // 0~18
+ let label='주의',gate='강한 주의';
+ if(raw>=15){label='우수';gate='보정 없음';}
+ else if(raw>=11){label='양호';gate='보정 없음';}
+ else if(raw>=7){label='보통';gate='선별 매수';}
+ else {label='주의';gate='매수 보류 검토';}
+
+ $('qualityScore').textContent=raw+' / 18';
+ $('qualityLabel').textContent=label;
+ $('qualityGate').textContent=gate;
+ return {score:raw,label,gate};
+}
+
+function visitChecklist(){
+ const ids=['ckSun','ckNoise','ckLeak','ckCrack','ckWater','ckElevator','ckParking','ckRoute','ckManage'];
+ const checked=ids.filter(id=>$(id)?.checked).length;
+ if(!$('visitCheckResult'))return checked;
+ $('visitCheckResult').className='banner '+(checked>=8?'good':checked>=5?'info':'warn');
+ $('visitCheckResult').innerHTML=
+  checked>=8
+   ?`임장 핵심체크 <b>${checked}/9개</b> 완료. 계약 전 권리관계와 관리자료를 최종 확인하세요.`
+   :`임장 체크가 <b>${checked}/9개</b>만 완료되었습니다. 현장을 더 확인하기 전 계약 결정을 서두르지 않는 것이 좋습니다.`;
+ return checked;
+}
+
+function cashPlan(fin,best){
+ if(!$('cashPrice'))return;
+ const price=best?best.price:n('homePrice');
+ const cost=price*n('costRate')/100;
+ $('cashPrice').textContent=won(price);
+ $('cashCost').textContent=won(cost);
+ $('cashMove').textContent=won(n('moveReserve'));
+ $('cashEmergency').textContent=won(n('emergency'));
+
+ const totalNeed=price+cost+n('moveReserve')+n('emergency');
+ const own=n('cash')+n('invest')+n('jeonseDeposit')-n('jeonseLoan')-n('otherDebt');
+ const verified=n('verifiedLoan');
+ const cover=own+(verified>0?verified:fin.loan.safe);
+ const shortage=Math.max(0,totalNeed-cover);
+
+ $('cashPlanSummary').className='banner '+(shortage>0?'warn':'good');
+ $('cashPlanSummary').innerHTML=shortage>0
+  ?`비상자금과 입주예비비까지 남기려면 현재 기준 약 <b>${won(shortage)}</b>의 추가자금이 필요합니다.`
+  :`현재 입력기준에서는 매매대금·부대비용·입주예비비·비상예비자금을 포함한 현금계획이 범위 안에 들어옵니다.`;
+}
+
+
+function getBestCandidateSnapshot(){
+ const rows=calcCandidates();
+ return rows && rows.length ? rows[0] : null;
+}
+
+function finalDecisionEngine(total, dec, fin, ready, rent, market){
+ const best=getBestCandidateSnapshot();
+ const areas=calcAreaScores();
+ let code=dec.code;
+ const gates=[];
+ const verified=n('verifiedLoan')>0;
+ const quality=qualityEval();
+ const checklistDone=visitChecklist();
+
+ // 금융 사전확인 없이는 A 확정 금지
+ if(!verified && code==='A'){
+  code='B';
+  gates.push('금융기관·금융전문가 대출 사전확인 전이므로 A 판정을 B로 제한');
+ }
+
+ // 실제 관심주택 자금부족
+ if(best){
+  const totalNeed=best.price*(1+n('costRate')/100);
+  const loanNeed=Math.max(0,totalNeed-fin.equity);
+  const usableLoan=verified?n('verifiedLoan'):fin.loan.safe;
+  const shortfall=Math.max(0,loanNeed-usableLoan);
+
+  if(shortfall>0 && shortfall>=3000 && (code==='A'||code==='B')){
+   code='C';
+   gates.push(`관심주택 매수자금이 약 ${won(shortfall)} 부족`);
+  }
+  if(best.price>fin.safe*1.10 && (code==='A'||code==='B')){
+   code='C';
+   gates.push('관심주택 가격이 안전 매수예산을 10% 이상 초과');
+  }
+ }
+
+ if(ready.burden>45 && code==='A'){
+  code='B';
+  gates.push('월 상환부담이 실수령의 45%를 초과');
+ }
+ if(n('emergency')<=0 && code==='A'){
+  code='B';
+  gates.push('비상예비자금 미확보');
+ }
+ if($('longStay').value==='no' && code==='A'){
+  code='B';
+  gates.push('5년 이상 실거주 가능성이 낮음');
+ }
+ if(quality.score<7 && (code==='A'||code==='B')){
+  code='C';
+  gates.push('관심주택 상품성이 낮아 매수 보류 검토');
+ }else if(quality.score<11 && code==='A'){
+  code='B';
+  gates.push('상품성 점수가 보통 수준이라 선별 매수로 조정');
+ }
+ if(checklistDone<5 && code==='A'){
+  code='B';
+  gates.push('임장 핵심체크가 충분히 완료되지 않음');
+ }
+
+ // matrix highlight
+ ['A','B','C','D'].forEach(x=>$('matrix'+x)?.classList.remove('active'));
+ $('matrix'+code)?.classList.add('active');
+
+ const label=codeLabel(code);
+ let summary='';
+ if(code==='A'){
+  summary=`<b>${label}</b><br>현재 자금준비·월 상환여력·관심주택 가격조건이 모두 양호한 편입니다. 금융 사전확인까지 끝났다면 적정가격 범위의 주택은 지금 매수를 진행할 수 있습니다.`;
+ }else if(code==='B'){
+  summary=`<b>${label}</b><br>매수 준비는 되어 있지만 아무 집이나 살 단계는 아닙니다. 최근 실거래와 비교해 가격경쟁력이 있는 매물만 선별적으로 접근하는 것이 좋습니다.`;
+ }else if(code==='C'){
+  summary=`<b>${label}</b><br>현재도 매수 검토는 가능하지만 생활여유 또는 자기자금이 충분하지 않을 수 있습니다. 6·12·24개월 시나리오를 비교해 부담이 줄어드는 시점을 선택하는 것이 좋습니다.`;
+ }else{
+  summary=`<b>${label}</b><br>현재는 매수보다 임차 유지가 더 안정적입니다. 자기자금·월 상환여력·관심주택 가격 중 최소 두 가지 이상이 개선된 뒤 다시 판단하는 것이 좋습니다.`;
+ }
+ if(gates.length) summary+=`<br><span class="small"><b>판정 보정:</b> ${gates.join(' · ')}</span>`;
+ $('decisionEngineSummary').className='banner '+(code==='A'?'good':code==='D'?'bad':code==='C'?'warn':'info');
+ $('decisionEngineSummary').innerHTML=summary;
+
+ // Reasons
+ $('reasonFinance').innerHTML=
+  `내가 집 살 준비가 되었나 <b>${ready.score}/50점</b>. 안전 매수예산 약 <b>${won(fin.safe)}</b>. `+
+  `예상 월 상환부담은 실수령의 <b>${ready.burden.toFixed(1)}%</b>. `+
+  (verified?`금융 사전확인 한도 ${won(n('verifiedLoan'))} 반영.`:`금융 사전확인 전이라 참고계산만 사용.`);
+
+ $('reasonRent').innerHTML=
+  `계속 임차로 살 때 부담점수 <b>${rent.score}/20점</b>. `+
+  `1년 임차비 약 ${won(rent.annual)}, 5년 누적 약 <b>${won(cumulativeRent(60))}</b>. `+
+  `임차비가 높을수록 기다리는 비용도 커집니다.`;
+
+ let areaText=areas&&areas.length?`${areas[0].name} ${areas[0].score.toFixed(1)}점이 지역 1순위. `:'';
+ let homeText=best?`${best.name}이 후보 1순위, 적정가 ${won(best.fair)}, 호가차 ${best.gap>=0?'+':''}${best.gap.toFixed(1)}%.`:'관심주택 입력 필요.';
+ if(currentAutoFairResult?.fair>0 && $('individualFair')?.textContent!=='-'){
+   homeText += ` 개별조건 보정가 ${$('individualFair').textContent}.`;
+ }
+ $('reasonMarketHome').innerHTML=
+  `지금 이 집을 사도 괜찮은가 <b>${market.score}/30점</b>. 수요·공급·금융·규제의 4대 시장축을 반영했습니다. ${areaText}${homeText} 상품성 ${quality.score}/18점(${quality.label}).`;
+
+ cashPlan(fin,best);
+
+ // Next 3 actions
+ if(!verified){
+  $('next1Title').textContent='금융 사전확인';
+  $('next1Text').textContent='은행 또는 금융전문가에게 실제 대출한도·금리·DSR·LTV 적용을 확인합니다.';
+ }else{
+  $('next1Title').textContent='금융조건 확정';
+  $('next1Text').textContent='사전확인 받은 한도와 실제 실행금리, 상환방식을 계약 전 다시 확인합니다.';
+ }
+
+ if(best){
+  $('next2Title').textContent='1순위 주택 현장확인';
+  $('next2Text').textContent=`${best.name}의 동·층·향·수리상태·소음·관리비·권리관계를 확인합니다.`;
+  $('next3Title').textContent='최대 매수가 설정';
+  const maxOffer=Math.min(fin.safe,best.fair*1.03);
+  const firstOffer=best.fair*0.97;
+  $('next3Text').textContent=`협상 시작가는 약 ${won(firstOffer)}, 최대 매수가는 약 ${won(maxOffer)}를 참고해 협상합니다.`;
+ }else{
+  $('next2Title').textContent='후보주택 선정';
+  $('next2Text').textContent='관심주택 2~3개를 입력해 가격과 실거주 조건을 비교합니다.';
+  $('next3Title').textContent='가격협상 기준 설정';
+  $('next3Text').textContent='최근 실거래와 유사단지 비교가를 기준으로 협상가와 최대 매수가를 정합니다.';
+ }
+
+ return {code,gates,best,areas};
+}
+
+
+function calc(){
+ autoMarketFromData();
+ marketSimpleScore();
+ calcAreaScores();
+ calcCandidates();
+ const fin=currentFinance(0);
+ const ready=readinessScore(fin);
+ const rent=rentBurdenScore();
+ const market=marketHomeScore();
+ const total=ready.score+rent.score+market.score;
+ const dec=decisionFromScore(total,ready,fin);
+
+ $('netWorth').textContent=won(fin.net);
+ $('availableEquity').textContent=won(fin.equity);
+ $('safeBudget').textContent=won(fin.safe);
+ $('maxBudget').textContent=won(fin.max);
+
+ $('financeSource').className='banner '+(fin.loan.verified?'good':'warn');
+ $('financeSource').innerHTML=fin.loan.verified
+  ?`금융기관·전문가 사전확인 대출한도 <b>${won(n('verifiedLoan'))}</b>를 사용해 예산을 계산했습니다.`
+  :`금융 사전확인값이 없어 월 실수령의 ${n('recommendedRatio')}% 상환을 기준으로 계산한 <b>상담용 참고 대출여력 ${won(fin.loan.refSafe)}</b>를 사용했습니다. 실제 대출한도가 아닙니다.`;
+
+ $('totalScore').textContent=total;
+ $('decisionLabel').innerHTML=`<span class="${cls(dec.code)}">${codeLabel(dec.code)}</span>`;
+ $('readyScore').textContent=ready.score+' / 50';
+ $('rentScore').textContent=rent.score+' / 20';
+ $('marketScore').textContent=market.score+' / 30';
+ updateScoreMeanings(ready.score,rent.score,market.score);
+ $('readyBar').style.width=(ready.score/50*100)+'%';
+ $('rentBar').style.width=(rent.score/20*100)+'%';
+ $('marketBar').style.width=(market.score/30*100)+'%';
+
+ let explain='';
+ if(dec.code==='A') explain='자금준비와 월 상환여력이 안정적이고, 시장·주택 조건도 현재 매수를 검토할 수준입니다.';
+ else if(dec.code==='B') explain='매수 준비는 되어 있지만 모든 집을 살 시기는 아닙니다. 적정가격 이하의 좋은 매물만 선별하는 전략이 적절합니다.';
+ else if(dec.code==='C') explain='현재 바로 사기보다 6~24개월 동안 자기자금을 더 늘리면 생활안정성이 좋아질 가능성이 큽니다.';
+ else explain='현재는 무리한 매수보다 임차를 유지하면서 자금과 주택가격 조건을 개선하는 편이 안전합니다.';
+ $('decisionExplain').className='banner '+(dec.code==='A'?'good':dec.code==='D'?'bad':dec.code==='C'?'warn':'info');
+ $('decisionExplain').innerHTML=`<b>${codeLabel(dec.code)}</b><br>${explain}`;
+
+ $('forcedRules').style.display=dec.forced.length?'block':'none';
+ $('forcedRules').innerHTML=dec.forced.length?'<b>보정조건:</b> '+dec.forced.join(' · '):'';
+
+ renderTimeline(fin);
+ const engine=finalDecisionEngine(total,dec,fin,ready,rent,market);
+ const finalDec={...dec,code:engine.code};
+ renderFinal(total,finalDec,fin,ready,rent,market);
+ integratedDecisionUpdate();
+ calcStressTest();
+ updateTopSummary();
+}
+
+function renderTimeline(current){
+ const monthsList=[0,6,12,24];
+ const price=n('homePrice');
+ const cr=n('costRate')/100;
+ const rows=monthsList.map(m=>{
+  const fin=currentFinance(m);
+  const rent=cumulativeRent(m);
+  const requiredLoan=Math.max(0,price*(1+cr)-fin.equity);
+  const usedLoan=Math.min(requiredLoan,fin.loan.safe);
+  const monthly=pmt(usedLoan,n('mortgageRate'),n('loanYears'));
+  const diff=fin.safe-price;
+  return {m,fin,rent,requiredLoan,monthly,diff};
+ });
+ $('timelineBody').innerHTML=rows.map(r=>`
+  <tr>
+   <td><b>${r.m===0?'지금':r.m+'개월 후'}</b></td>
+   <td>${won(r.fin.equity)}</td>
+   <td>${won(r.rent)}</td>
+   <td>${won(r.fin.safe)}</td>
+   <td class="${r.diff>=0?'statusA':'statusC'}">${r.diff>=0?'예산 내 +'+won(r.diff):'부족 '+won(Math.abs(r.diff))}</td>
+   <td>${won(r.requiredLoan)}</td>
+   <td>${won(r.monthly)}</td>
+  </tr>`).join('');
+
+ const firstEnough=rows.find(r=>r.fin.safe>=price);
+ if(firstEnough){
+  $('timingSummary').className='banner good';
+  $('timingSummary').innerHTML=firstEnough.m===0
+   ?`현재 안전예산 안에 관심주택이 들어옵니다. 다만 가격 적정성과 금융 사전확인을 거친 뒤 매수 여부를 결정하세요.`
+   :`현재보다 <b>${firstEnough.m}개월</b> 준비하면, 현재 관심주택 가격이 그대로라는 가정에서 안전예산 범위에 들어옵니다. 그때까지 누적 임차비는 약 ${won(firstEnough.rent)}입니다.`;
+ }else{
+  $('timingSummary').className='banner warn';
+  $('timingSummary').innerHTML=`24개월 뒤에도 현재 관심주택이 안전예산을 초과합니다. 주택가격을 낮추거나 저축·소득·금융조건을 다시 검토하는 편이 좋습니다.`;
+ }
+}
+
+function renderFinal(total,dec,fin,ready,rent,market){
+ const name=$('clientName').value.trim()||'고객';
+ const price=n('homePrice');
+ const fair=n('fairPrice');
+ const gap=fair>0?(price-fair)/fair*100:0;
+ const rent5=cumulativeRent(60);
+ let msg=`${name}님의 내 집 마련 준비도는 <b>${total}점</b>이며 현재 결론은 <b>${codeLabel(dec.code)}</b>입니다. `;
+ msg+=`현재 순자산은 ${won(fin.net)}, 실제 매수에 사용할 수 있는 자기자금은 약 ${won(fin.equity)}, 상담용 안전 매수예산은 약 <b>${won(fin.safe)}</b>입니다. `;
+ msg+=`현재 임차조건을 5년 유지할 경우 누적 임차비는 약 <b>${won(rent5)}</b>으로 계산됩니다. `;
+ if(fair>0){
+  msg+=`관심주택 ${won(price)}은 입력한 적정가격 ${won(fair)} 대비 ${gap>=0?'+':''}${gap.toFixed(1)}% 수준입니다. `;
+ }
+ if(dec.code==='A') msg+='적정가격에 맞는 매물이고 금융 사전확인이 끝났다면 지금 매수를 진행할 수 있습니다.';
+ if(dec.code==='B') msg+='추격매수보다 최근 실거래 대비 가격경쟁력이 있는 매물만 선별적으로 접근하는 것이 좋습니다.';
+ if(dec.code==='C') msg+='6·12·24개월 후 자기자금이 얼마나 늘어나는지 비교해 가장 부담이 적은 시점을 선택하는 것이 좋습니다.';
+ if(dec.code==='D') msg+='현재는 임차를 유지하면서 자기자금과 금융여력을 먼저 개선하는 것이 안전합니다.';
+ $('finalConclusion').className='banner '+(dec.code==='A'?'good':dec.code==='D'?'bad':dec.code==='C'?'warn':'info');
+ $('finalConclusion').innerHTML=msg+'<br><br><b>금융 관련 최종판단은 반드시 금융전문가 또는 취급 금융기관의 확인을 받아야 합니다.</b>';
+}
+
+function saveState(){
+ const d={};
+ document.querySelectorAll('input,select').forEach(el=>{if(el.id)d[el.id]=el.value});
+ localStorage.setItem('goodhouse_v2_mvp',JSON.stringify(d));
+ alert('상담정보를 저장했습니다.');
+}
+function loadState(){
+ const raw=localStorage.getItem('goodhouse_v2_mvp');
+ if(!raw)return alert('저장된 상담정보가 없습니다.');
+ const d=JSON.parse(raw);
+ Object.entries(d).forEach(([k,v])=>{if($(k))$(k).value=v});
+ calc();
+}
+if($('officialDataDate') && !$('officialDataDate').value) $('officialDataDate').value=new Date().toISOString().slice(0,10);
+if($('workerUrl')) $('workerUrl').value=localStorage.getItem('goodhouse_worker_url')||'https://old-cake-8242.kimenkim34.workers.dev';
+calc();
+</script>
+</body>
+</html>
